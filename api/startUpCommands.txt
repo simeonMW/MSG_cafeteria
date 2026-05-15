@@ -1,0 +1,63 @@
+CAFE ORDERING SYSTEM - STARTUP COMMANDS
+===========================================
+
+**IMPORTANT: All issues have been fixed. See STARTUP_GUIDE.md for detailed instructions.**
+
+Environment Setup
+==================
+
+# 1. Create a virtual environment
+python -m venv venv
+
+# 2. Activate the environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# 3. Install all required packages
+pip install -r requirements.txt
+
+
+Flask Configuration
+====================
+
+#Flask needs to know where the app instance is. 
+#The Application Factory Pattern is used in app.py
+
+set FLASK_APP=app.py  
+set FLASK_ENV=development
+
+# Or on macOS/Linux:
+# export FLASK_APP=app.py
+# export FLASK_ENV=development
+
+
+Database Initialization (Change Management)
+==============================================
+
+# 1. Initialize the migration directory (Creates the /migrations folder)
+flask db init
+
+# 2. Capture the initial schema from your models
+flask db migrate -m "Initial schema"
+
+# 3. Apply the schema to the database (Creates cafe_system.db)
+flask db upgrade
+
+
+Starting the Server
+====================
+
+# Start the backend server
+# Accessible at http://127.0.0.1:5000
+python app.py
+
+
+
+Executing Automated Tests
+===========================
+
+# Run the functional test suite
+python tests/systemTest1.py
+

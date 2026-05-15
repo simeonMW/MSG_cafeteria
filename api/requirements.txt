@@ -1,0 +1,27 @@
+# Web Framework
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate
+
+# Security & Authentication
+PyJWT==2.8.0
+bcrypt==4.1.2
+python-dotenv==1.0.0
+
+# Database Driver
+SQLAlchemy==2.0.23
+
+# Utility & File Generation
+# Process 3.3 (QR Generation)
+qrcode[pil]==7.4.2
+
+# Process 4.2 (PDF Reporting)
+fpdf2==2.7.4
+
+# Server (Production-ready WSGI server)
+#gunicorn==21.2.0
+# Basic usage: waitress-serve --host=127.0.0.1 --port=8080 myappfile:appobject
+waitress
+
+# for testing
+requests

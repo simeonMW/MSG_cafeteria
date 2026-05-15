@@ -1,0 +1,302 @@
+--------------------------------------------------------------
+# first Test results : 
+
+---------------------------------------------------------------
+
+(cafeOrdering) C:\Users\USER\Desktop\cafeOrdering\cafeOrderingSystem>python tests/systemTest1.py
+
+
+╔====================================================================╗
+║                                                                    ║
+║         CAFE ORDERING SYSTEM - COMPREHENSIVE API TEST SUITE        ║
+║                                                                    ║
+╚====================================================================╝
+
+======================================================================
+1. AUTHENTICATION TESTS
+======================================================================
+←[91m[✗] Register customer←[0m
+    → Status 500: <!doctype html>
+<html lang=en>
+  <head>
+    <title>sqlalchemy.exc.OperationalError: (sqlite3.Operati
+←[91m[✗] Register chef←[0m
+    → Status 500: <!doctype html>
+<html lang=en>
+  <head>
+    <title>sqlalchemy.exc.OperationalError: (sqlite3.Operati
+←[91m[✗] Register hr_manager←[0m
+    → Status 500: <!doctype html>
+<html lang=en>
+  <head>
+    <title>sqlalchemy.exc.OperationalError: (sqlite3.Operati
+
+----------------------------------------------------------------------
+←[91m[✗] Login customer←[0m
+    → Status 500: <!doctype html>
+<html lang=en>
+  <head>
+    <title>sqlalchemy.exc.OperationalError: (sqlite3.Operati
+←[91m[✗] Login chef←[0m
+    → Status 500: <!doctype html>
+<html lang=en>
+  <head>
+    <title>sqlalchemy.exc.OperationalError: (sqlite3.Operati
+←[91m[✗] Login hr_manager←[0m
+    → Status 500: <!doctype html>
+<html lang=en>
+  <head>
+    <title>sqlalchemy.exc.OperationalError: (sqlite3.Operati
+
+----------------------------------------------------------------------
+←[91m[✗] Register - Missing fields validation←[0m
+←[92m[✓] Login - Invalid credentials←[0m
+
+----------------------------------------------------------------------
+←[91m[✗] Verify user (HR)←[0m
+    → HR manager token not available
+
+======================================================================
+2. MENU MANAGEMENT TESTS
+======================================================================
+←[91m[✗] Get public menu←[0m
+    → Customer token not available
+
+----------------------------------------------------------------------
+←[91m[✗] Chef get inventory←[0m
+    → Chef token not available
+
+----------------------------------------------------------------------
+←[91m[✗] Chef add item←[0m
+    → Chef token not available
+
+----------------------------------------------------------------------
+←[91m[✗] Chef update item←[0m
+    → Chef token or item ID not available
+
+----------------------------------------------------------------------
+←[91m[✗] Chef toggle item←[0m
+    → Chef token or item ID not available
+
+----------------------------------------------------------------------
+←[91m[✗] Menu authorization←[0m
+    → Customer token not available
+
+======================================================================
+3. ORDER MANAGEMENT TESTS
+======================================================================
+←[91m[✗] Place order←[0m
+    → Customer token or menu items not available
+
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+←[91m[✗] Verify order←[0m
+    → Chef token or order not available
+
+----------------------------------------------------------------------
+←[91m[✗] Replay attack prevention←[0m
+    → Chef token or order not available
+
+----------------------------------------------------------------------
+←[91m[✗] Orders authorization←[0m
+    → HR manager token or order not available
+
+======================================================================
+4. REPORTING TESTS
+======================================================================
+←[91m[✗] Generate report←[0m
+    → HR manager token not available
+
+----------------------------------------------------------------------
+←[91m[✗] Generate report with dates←[0m
+    → HR manager token not available
+
+----------------------------------------------------------------------
+←[91m[✗] Dashboard summary←[0m
+    → HR manager token not available
+
+----------------------------------------------------------------------
+←[91m[✗] Reports authorization←[0m
+    → Customer token not available
+
+======================================================================
+5. SECURITY & ERROR HANDLING TESTS
+======================================================================
+←[91m[✗] Missing auth token returns 401←[0m
+
+----------------------------------------------------------------------
+←[91m[✗] Invalid token returns 401←[0m
+
+----------------------------------------------------------------------
+
+======================================================================
+TEST SUMMARY
+======================================================================
+Total Tests: 25
+✓ Passed: 1
+✗ Failed: 24
+Success Rate: 4.0%
+
+Failed Tests:
+  • Register customer
+  • Register chef
+  • Register hr_manager
+  • Login customer
+  • Login chef
+  • Login hr_manager
+  • Register - Missing fields validation
+  • Verify user (HR)
+  • Get public menu
+  • Chef get inventory
+  • Chef add item
+  • Chef update item
+  • Chef toggle item
+  • Menu authorization
+  • Place order
+  • Verify order
+  • Replay attack prevention
+  • Orders authorization
+  • Generate report
+  • Generate report with dates
+  • Dashboard summary
+  • Reports authorization
+  • Missing auth token returns 401
+  • Invalid token returns 401
+======================================================================
+
+
+
+
+-----------------------------------------------------------------------
+# Second Test Results 
+-----------------------------------------------------------------------
+
+
+╔====================================================================╗
+║                                                                    ║
+║         CAFE ORDERING SYSTEM - COMPREHENSIVE API TEST SUITE        ║
+║                                                                    ║
+╚====================================================================╝
+
+======================================================================
+1. AUTHENTICATION TESTS
+======================================================================
+←[92m[✓] Register customer←[0m
+    → User already exists (continuing)
+←[92m[✓] Register chef←[0m
+    → User already exists (continuing)
+←[92m[✓] Register hr_manager←[0m
+    → User already exists (continuing)
+
+----------------------------------------------------------------------
+←[92m[✓] Login customer←[0m
+    → Token received
+←[92m[✓] Login chef←[0m
+    → Token received
+←[92m[✓] Login hr_manager←[0m
+    → Token received
+Customer verified
+Customer login successful after verification
+
+----------------------------------------------------------------------
+←[92m[✓] Register - Missing fields validation←[0m
+←[92m[✓] Login - Invalid credentials←[0m
+
+----------------------------------------------------------------------
+←[92m[✓] HR verify user←[0m
+    → User verified
+
+----------------------------------------------------------------------
+←[92m[✓] Chef get inventory←[0m
+    → Found 10 items
+
+----------------------------------------------------------------------
+←[92m[✓] Chef add item←[0m
+    → Item ID: 11
+
+======================================================================
+2. MENU MANAGEMENT TESTS
+======================================================================
+←[92m[✓] Get public menu←[0m
+    → Found 3 items
+
+----------------------------------------------------------------------
+←[92m[✓] Chef add item 2←[0m
+    → Item ID: 12
+
+----------------------------------------------------------------------
+←[92m[✓] Chef update item←[0m
+    → Item updated
+
+----------------------------------------------------------------------
+←[92m[✓] Chef toggle item←[0m
+    → Item toggled
+
+----------------------------------------------------------------------
+←[92m[✓] Customer cannot add items←[0m
+
+======================================================================
+3. ORDER MANAGEMENT TESTS
+======================================================================
+←[92m[✓] Place order←[0m
+    → Transaction ID: 7, Token: 848880be-16da-4a8f-a...
+
+----------------------------------------------------------------------
+←[92m[✓] Place multiple orders←[0m
+    → Created 3 orders
+
+----------------------------------------------------------------------
+←[92m[✓] Chef verify order←[0m
+    → Success: Order #7 verified and fulfilled.
+
+----------------------------------------------------------------------
+←[92m[✓] Replay attack prevented←[0m
+    → Second verification correctly rejected
+
+----------------------------------------------------------------------
+←[92m[✓] HR cannot verify orders←[0m
+
+======================================================================
+4. REPORTING TESTS
+======================================================================
+←[92m[✓] Generate financial report←[0m
+    → Report generated
+
+----------------------------------------------------------------------
+←[91m[✗] Generate report with date range←[0m
+    → Status 400: {
+  "error": "No transactions found for the selected period."
+}
+
+
+----------------------------------------------------------------------
+←[92m[✓] Get dashboard summary←[0m
+    → Summary retrieved
+
+----------------------------------------------------------------------
+←[92m[✓] Customer cannot generate reports←[0m
+
+======================================================================
+5. SECURITY & ERROR HANDLING TESTS
+======================================================================
+←[92m[✓] Missing auth token returns 401←[0m
+
+----------------------------------------------------------------------
+←[92m[✓] Invalid token returns 401←[0m
+
+----------------------------------------------------------------------
+←[92m[✓] Invalid item returns error←[0m
+←[92m[✓] Missing fields returns error←[0m
+
+======================================================================
+TEST SUMMARY
+======================================================================
+Total Tests: 29
+✓ Passed: 28
+✗ Failed: 1
+Success Rate: 96.6%
+
+Failed Tests:
+  • Generate report with date range
+======================================================================
