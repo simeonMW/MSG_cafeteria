@@ -18,6 +18,7 @@ class MenuRepo:
         new_item = MenuItem(
             name=item_data.get('name'),
             description=item_data.get('description'),
+            type=item_data.get('type', 'staple'),
             price=item_data.get('price'),
             picture_url=item_data.get('picture_url'),
             is_available=item_data.get('is_available', True)

@@ -16,8 +16,14 @@ class MenuItem(db.Model):
     description = db.Column(db.Text, nullable=True)
     
     # Financial Data
-    # Use Numeric/Decimal for currency to avoid floating-point errors in audits
-    price = db.Column(db.Float, nullable=False) 
+    price = db.Column(db.Float, nullable=False)
+
+    # Classification
+    type = db.Column(
+        db.Enum('staple', 'protein', 'snack', name='menu_item_type', native_enum=False),
+        nullable=False,
+        default='staple'
+    ) 
     
     # Media & Display
     picture_url = db.Column(db.String(255), nullable=True)
@@ -48,6 +54,7 @@ class MenuItem(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "type": self.type,
             "price": self.price,
             "picture_url": self.picture_url,
             "is_available": self.is_available,

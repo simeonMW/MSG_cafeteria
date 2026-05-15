@@ -21,7 +21,7 @@ class Config:
     
     # Token expiration time (Process 1.2: Authentication)
     # Shorter durations (8-12 hours) are better for security audits.
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=8)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=5)
 
     # 2. DATA STORE (D1, D2, D3)
     # The URI for the SQLAlchemy database. 
