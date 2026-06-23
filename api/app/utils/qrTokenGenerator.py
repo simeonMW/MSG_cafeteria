@@ -3,6 +3,7 @@ import qrcode
 import os
 from io import BytesIO
 from flask import current_app
+from app.supabase_client import SupabaseStorage
 
 class QRGen:
     """
@@ -37,20 +38,14 @@ class QRGen:
 
         # QR image 
         img = qr.make_image(fill_color="black", back_color="white")
-        
-        # storage path (must exists in deployment)
-        #directory = "app/static/qrcodes"
-        directory = "static/qrcodes"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            
-        file_name = f"qr_{token_string[:8]}.png"
-        file_path = os.path.join(directory, file_name)
-        
-        # Save image
-        img.save(file_path)
-        
-        return file_path
+
+        # Upload the generated image to Supabase Storage bucket.
+        file_name = f"qrcodes/qr_{token_string[:8]}.png"
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        buffer.seek(0)
+
+        return SupabaseStorage.upload_bytes(file_name, buffer.getvalue(), "image/png")
 
     @staticmethod
     def get_qr_bytes(token_string):

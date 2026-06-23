@@ -39,7 +39,7 @@ class MenuService:
             return None, "Unauthorized: Only the Chef can add menu items."
 
         # Audit Check: Ensure price is non-negative
-        if item_data.get('price', 0) < 0:
+        if int(item_data.get('price', 0)) < 0:
             return None, "Invalid Price: Items cannot have a negative value."
 
         new_item = MenuRepo.create(item_data)

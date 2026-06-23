@@ -72,6 +72,14 @@ class TransactionRepo:
         ).all()
 
     @staticmethod
+    def get_by_id(tx_id):
+        """
+        Fetch a transaction by its primary key.
+        Used for secure customer access to their stored QR asset.
+        """
+        return Transaction.query.get(tx_id)
+
+    @staticmethod
     def get_pending_count():
         """
         Operational metric for the Chef app to show how many orders 

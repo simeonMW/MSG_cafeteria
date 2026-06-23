@@ -1,27 +1,58 @@
-# Web Framework
-Flask==3.0.0
-Flask-SQLAlchemy==3.1.1
-Flask-Migrate
-
-# Security & Authentication
-PyJWT==2.8.0
+alembic==1.18.4
+annotated-types==0.7.0
+anyio==4.14.0
 bcrypt==4.1.2
-python-dotenv==1.0.0
-
-# Database Driver
-SQLAlchemy==2.0.23
-
-# Utility & File Generation
-# Process 3.3 (QR Generation)
-qrcode[pil]==7.4.2
-
-# Process 4.2 (PDF Reporting)
+blinker==1.9.0
+certifi==2026.4.22
+cffi==2.0.0
+charset-normalizer==3.4.7
+click==8.3.3
+colorama==0.4.6
+cryptography==49.0.0
+defusedxml==0.7.1
+deprecation==2.1.0
+Flask==3.0.0
+Flask-Migrate==4.1.0
+Flask-SQLAlchemy==3.1.1
+fonttools==4.62.1
 fpdf2==2.7.4
-
-# Server (Production-ready WSGI server)
-#gunicorn==21.2.0
-# Basic usage: waitress-serve --host=127.0.0.1 --port=8080 myappfile:appobject
-waitress
-
-# for testing
-requests
+greenlet==3.5.0
+h11==0.16.0
+h2==4.3.0
+hpack==4.1.0
+httpcore==1.0.9
+httpx==0.28.1
+hyperframe==6.1.0
+idna==3.13
+itsdangerous==2.2.0
+Jinja2==3.1.6
+Mako==1.3.11
+MarkupSafe==3.0.3
+multidict==6.7.1
+packaging==26.2
+pillow==12.2.0
+postgrest==2.31.0
+propcache==0.5.2
+psycopg2-binary==2.9.12
+pycparser==3.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+PyJWT==2.13.0
+pypng==0.20220715.0
+python-dotenv==1.0.0
+qrcode==7.4.2
+realtime==2.31.0
+requests==2.33.1
+SQLAlchemy==2.0.49
+storage3==2.31.0
+StrEnum==0.4.15
+supabase==2.31.0
+supabase-auth==2.31.0
+supabase-functions==2.31.0
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+urllib3==2.6.3
+waitress==3.0.2
+websockets==15.0.1
+Werkzeug==3.1.8
+yarl==1.24.2

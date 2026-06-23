@@ -1,6 +1,7 @@
 from fpdf import FPDF
 from datetime import datetime
 import os
+from app.supabase_client import SupabaseStorage
 
 class PDFGenerator:
     """
@@ -52,14 +53,8 @@ class PDFGenerator:
         pdf.cell(150, 10, "Total Gross Revenue:", 0, 0, 'R')
         pdf.cell(40, 10, f"{total_revenue:,.2f}", 1, 1, 'R')
 
-        # 5. Output Management
-        directory = "app/static/reports"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        # 5. Upload generated PDF to Supabase Storage bucket.
+        file_name = f"reports/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        pdf_bytes = pdf.output(dest='S').encode('latin-1')
 
-        file_name = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        file_path = os.path.join(directory, file_name)
-        
-        pdf.output(file_path)
-        
-        return file_path
+        return SupabaseStorage.upload_bytes(file_name, pdf_bytes, "application/pdf")

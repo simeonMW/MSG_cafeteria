@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify
 from app.services.reportService import ReportService
 from app.security import role_required
-import os
+from app.supabase_client import SupabaseStorage
 
 reports_bp = Blueprint('reports', __name__)
 
@@ -37,14 +37,11 @@ def download_report():
     """
     file_path = request.args.get('path')
     
-    if not file_path or not os.path.exists(file_path):
+    if not file_path:
         return jsonify({"error": "Report file not found"}), 404
 
-    # Security Check: Ensure the user isn't trying to access files outside the reports directory
-    if not file_path.startswith("app/static/reports"):
-        return jsonify({"error": "Unauthorized file access"}), 403
-
-    return send_file(file_path, as_attachment=True)
+    signed_url = SupabaseStorage.create_signed_url(file_path, expires_in=300)
+    return jsonify({"download_url": signed_url}), 200
 
 @reports_bp.route('/summary', methods=['GET'])
 @role_required(['hr_manager'])

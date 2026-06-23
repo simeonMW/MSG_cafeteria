@@ -13,26 +13,30 @@ class Config:
 
     # 1. SECURITY & INTEGRITY
     # Secret key for signing JWTs and session cookies. 
-    # IT Audit Rule: This MUST be a complex string stored in .env, never hardcoded.
-    SECRET_KEY = os.getenv("SECRET_KEY", "default-audit-key-2026-change-me")
+    # IT Audit Rule: MUST be a complex string stored in .env, never hardcoded.
+    SECRET_KEY = os.getenv("SECRET_KEY", "default-audit-key-2026-msg-mim-ict")
     
     # Encryption algorithm for JWT
     JWT_ALGORITHM = "HS256"
     
     # Token expiration time (Process 1.2: Authentication)
     # Shorter durations (8-12 hours) are better for security audits.
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=5)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
 
     # 2. DATA STORE (D1, D2, D3)
-    # The URI for the SQLAlchemy database. 
-    # Can be SQLite for development or PostgreSQL/MySQL for production.
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL",) #  "sqlite:///cafe_system.db"
+    # The URI for the SQLAlchemy database.
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")  # "sqlite:///cafe_system.db"
     
+    # Use Supabase as the cloud storage backend for generated assets.
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+    SUPABASE_STORAGE_BUCKET = os.getenv("SUPABASE_STORAGE_BUCKET", "public")
+
     # Disable track modifications to save system resources/memory
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # 3. FILESYSTEM PATHS (Process 3.3 & 4.2)
-    # Centralizing where the system saves generated QRs and PDFs.
+    # Local paths are retained only for development or fallback.
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static')
     REPORT_FOLDER = os.path.join(UPLOAD_FOLDER, 'reports')
@@ -47,6 +51,8 @@ class Config:
         """
         Ensures necessary directories exist upon system startup.
         Prevents runtime errors during Process 3.3 or 4.2.
+        """         
         """
         os.makedirs(Config.REPORT_FOLDER, exist_ok=True)
-        os.makedirs(Config.QR_FOLDER, exist_ok=True)
+        os.makedirs(Config.QR_FOLDER, exist_ok=True) 
+        """

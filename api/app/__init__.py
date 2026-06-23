@@ -14,7 +14,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Initialize Configuration (creates necessary directories)
-    Config.init_app(app)
+    #Config.init_app(app)
 
     # 1. Initialize Database with the Flask App
     db.init_app(app)
@@ -28,6 +28,7 @@ def create_app(config_class=Config):
     from app.api.Menu import menu_bp
     from app.api.orders import orders_bp
     from app.api.reports import reports_bp
+    from app.api.cronJob import health_bp
 
     # ---------------------------------------------------------
     # REGISTER BLUEPRINTS (Process Segregation)
@@ -44,6 +45,9 @@ def create_app(config_class=Config):
     
     # Process 4.0: Reporting & Finance Exports (HR)
     app.register_blueprint(reports_bp, url_prefix='/api/reports')
+    
+    # redundantProcess: Health Check & Cron Jobs
+    app.register_blueprint(health_bp, url_prefix='/api/health')
 
     # ---------------------------------------------------------
     # GLOBAL ERROR HANDLERS (Audit Log Consistency)

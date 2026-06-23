@@ -17,7 +17,7 @@ class UserRepo:
             password=user_data.get('password'),
             employee_number=user_data.get('employee_number'),
             role=user_data.get('role'),
-            is_verified=False  # Default state until HR action
+            is_verified=True #False must be default state until HR action
         )
         db.session.add(new_user)
         db.session.commit()

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services.orderService import OrderService
 from app.security import role_required
+from app.supabase_client import SupabaseStorage
 
 orders_bp = Blueprint('orders', __name__)
 
@@ -25,11 +26,13 @@ def place_order():
     if not transaction:
         return jsonify({"error": msg}), 400
 
+    signed_url = SupabaseStorage.create_signed_url(transaction.qr_code_path, expires_in=300)
+
     return jsonify({
         "message": msg,
         "transaction_id": transaction.id,
         "token": transaction.token,
-        "qr_code_url": transaction.qr_code_path,
+        "qr_code_url": signed_url,
         "price_charged": transaction.order_price
     }), 201
 
@@ -63,6 +66,21 @@ def get_history():
     user_id = request.user.get('user_id')
     history = OrderService.get_customer_history(user_id)
     return jsonify([tx.to_dict() for tx in history]), 200
+
+@orders_bp.route('/<int:transaction_id>/qr', methods=['GET'])
+@role_required(['customer'])
+def get_transaction_qr(transaction_id):
+    """
+    Returns a time-limited signed URL for the requested transaction QR code.
+    """
+    user_id = request.user.get('user_id')
+    transaction = OrderService.get_transaction_by_id(transaction_id)
+
+    if not transaction or transaction.customer_id != user_id:
+        return jsonify({"error": "Transaction not found or access denied."}), 404
+
+    signed_url = SupabaseStorage.create_signed_url(transaction.qr_code_path, expires_in=300)
+    return jsonify({"qr_code_url": signed_url}), 200
 
 @orders_bp.route('/queue', methods=['GET'])
 @role_required(['chef'])

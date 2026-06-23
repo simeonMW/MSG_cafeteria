@@ -49,7 +49,7 @@ class OrderService:
 
         # Fetch from D3 using the unique token index
         transaction = TransactionRepo.get_by_token(token_str)
-
+    
         if not transaction:
             return False, "Invalid Token: No matching transaction found."
 
@@ -58,7 +58,7 @@ class OrderService:
 
         # Finalize the transaction
         TransactionRepo.mark_as_checked_out(transaction.id)
-        
+    
         return True, f"Success: Order #{transaction.id} verified and fulfilled."
 
     @staticmethod
@@ -67,6 +67,14 @@ class OrderService:
         Logic for the Customer Mobile App to view personal order logs.
         """
         return TransactionRepo.get_user_history(user_id)
+
+    @staticmethod
+    def get_transaction_by_id(tx_id):
+        """
+        Fetch a single transaction by its id.
+        This is used when generating signed URLs for customer assets.
+        """
+        return TransactionRepo.get_by_id(tx_id)
 
     @staticmethod
     def get_chef_queue(role):
