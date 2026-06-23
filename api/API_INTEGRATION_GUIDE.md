@@ -39,12 +39,12 @@ The API uses **JWT (JSON Web Token)** authentication and role-based access contr
 
 ### Development
 ```
-http://localhost:5000/api
+http://localhost:5000/
 ```
 
 ### Production (Render)
 ```
-https://<your-render-app>.onrender.com/api
+https://msg-cafeteria.onrender.com
 ```
 
 ### Headers (All Requests)

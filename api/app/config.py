@@ -25,8 +25,9 @@ class Config:
 
     # 2. DATA STORE (D1, D2, D3)
     # The URI for the SQLAlchemy database.
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")  # "sqlite:///cafe_system.db"
-    
+    # SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")  # "sqlite:///cafe_system.db"
+    SQLALCHEMY_DATABASE_URI = os.getenv("SUPABASE_URL")
+
     # Use Supabase as the cloud storage backend for generated assets.
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")

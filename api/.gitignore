@@ -3,5 +3,5 @@
 .env
 
 #local private folders
-/instance
-/static
+instance
+static
