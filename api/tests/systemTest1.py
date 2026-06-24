@@ -6,7 +6,7 @@ import requests
 import json
 from datetime import datetime, timedelta
 
-BASE_URL = "http://127.0.0.1:5000/api"
+BASE_URL = "https://msg-cafeteria.onrender.com/api"
 
 # Test data
 TEST_USERS = {

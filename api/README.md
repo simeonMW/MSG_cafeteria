@@ -46,7 +46,35 @@ Use the Migration Engine to ensure schema integrity:
    # Apply the migration to create the physical database
    flask db upgrade
    ```
-## 4. API Summary
+
+## 4. Render Keep-Alive / Cron Heartbeat
+To prevent Render free instances from idling, use the built-in health endpoint as a heartbeat target.
+
+* Health endpoint: `GET /api/health/ping`
+* Example deployed URL: `https://your-app.onrender.com/api/health/ping`
+
+### Recommended approach
+1. Deploy the app to Render.
+2. Use an external scheduler or uptime monitor to call the above endpoint every 10 minutes.
+3. If you want a local helper, use `render_keepalive.sh` in the repo root.
+
+### Local helper script
+```sh
+# Make this file executable once:
+chmod +x render_keepalive.sh
+
+# Run manually:
+./render_keepalive.sh
+```
+
+### Cron schedule example
+```cron
+*/10 * * * * /path/to/render_keepalive.sh
+```
+
+Note: Render free tier does not guarantee always-on processes, so an external regular ping is the most reliable keep-alive strategy.
+
+## 5. API Summary
 The system is organized into four main API Blueprints, ensuring segregation of duties as required for Auditing.
 
 | **Blueprint** | **Endpoint** | **Role** | **description** |
