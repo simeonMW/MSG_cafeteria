@@ -23,7 +23,7 @@ class AuthService:
         
         # New users are 'unverified' by default to satisfy Process 1.3
         user = UserRepo.create(data)
-        return user, "Registration successful. Pending HR verification."
+        return user, "Registration successful."
 
     @staticmethod
     def login_user(credentials):
