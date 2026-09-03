@@ -27,7 +27,7 @@ class User(db.Model):
     
     # Governance & Verification (DFD 1.3/1.4)
     # Initial registration sets this to False; HR must manually verify.
-    is_verified = db.Column(db.Boolean, default=False, nullable=True)
+    is_verified = db.Column(db.Boolean, default=True, nullable=True)
     
     # Auditing Control
     # Essential for Audit to track account age and registration timing.

@@ -10,7 +10,7 @@ reports_bp = Blueprint('reports', __name__)
 def generate_report():
     """
     Endpoint for Process 4.1 & 4.2.
-    Aggregates D3 data and generates a PDF for Finance.
+    Aggregates D3 data and generates a document for Finance.
     """
     data = request.get_json() or {}
     role = request.user.get('role')

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MSG Cafe Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Brand Header -->
+            <div class="auth-brand">
+                <span class="auth-logo-icon">🍴</span>
+                <h2>MSG Cafe</h2>
+                <p class="auth-subtitle">Admin System Login</p>
+            </div>
+
+            <!-- Error / Status Alert -->
+            <div id="authAlert" class="auth-alert hidden"></div>
+
+            <!-- Credentials Form -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="auth-form">
+                <!-- Employee ID Field -->
+                <div class="auth-field-group">
+                    <label for="employee_id" class="auth-label">Employee ID</label>
+                    <div class="auth-input-wrapper">
+                        <span class="input-icon">🆔</span>
+                        <input 
+                            type="text" 
+                            id="employee_id" 
+                            name="employee_id" 
+                            class="auth-input font-mono" 
+                            placeholder="e.g. msg27785" 
+                            required 
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="auth-field-group">
+                    <label for="email" class="auth-label">Email Address</label>
+                    <div class="auth-input-wrapper">
+                        <span class="input-icon">✉️</span>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="auth-input" 
+                            placeholder="admin@gmail.com" 
+                            required 
+                            autocomplete="email"
+                        >
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="auth-field-group">
+                    <label for="password" class="auth-label">Password</label>
+                    <div class="auth-input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="auth-input font-mono" 
+                            placeholder="••••••••••••" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                        <button 
+                            type="button" 
+                            class="pwd-toggle-btn" 
+                            onclick="toggleLoginPassword()" 
+                            title="Toggle password visibility"
+                        >
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="submit" id="loginSubmitBtn" class="primary-btn auth-btn">
+                    <span>Sign In</span>
+                    <span class="btn-spinner hidden" id="loginSpinner">⏳</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span class="text-muted">Protected System • Authorized Employees Only</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

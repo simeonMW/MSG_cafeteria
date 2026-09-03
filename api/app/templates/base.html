@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MSG Cafe Admin{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/device_responsive_style.css') }}">
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/animation_style.css') }}">-->
+
+    <script>
+        const month_url = "{{ url_for('dashboard.month') }}";
+        window.set_month = async function (monthizzo) {
+            /* console.log(monthizzo); */
+            try {
+                const respoC = await fetch(
+                    month_url,
+                    {
+                        method: "POST",
+                        headers : {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ month: monthizzo})
+                    }
+                );
+                response = await respoC.json();
+                if (response.status === "success") {
+                    //console.log(document.URL);
+                    window.open(document.URL, "_self")
+                    //fetch(document.URL)
+                }
+            } catch (error) {
+                console.log("error updating active month")
+            }
+        }
+        //let month = "{{ active_month }}";
+        //console.log(/* current_month +" "+typeof(current_month) +" "+  */"{{ active_month }}"+" "+ "{{ active_month }}".charAt(6)+" "+ "{{ active_month }}".slice(3)+" "+month);
+        /* if ( month.charAt(6) === "0" ){
+            month = month.slice(0, 5)+"0"+month.charAt(5);
+            window.set_month( month );
+        } */
+        //console.log(/* current_month +" "+typeof(current_month) +" "+  */"{{ active_month }}"+" "+ "{{ active_month }}".charAt(6)+" "+ "{{ active_month }}".slice(3)+" "+month);
+    </script>
+    
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><span class="brand-mark">MSG</span>Cafe</h2>
+                <button id="sidebarExit" onclick="closeMenu()">
+                    <span class="close-btn">&times;</span>
+                </button>
+                <button id="sidebarMenu" onclick="openMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+
+            {% block active %}
+                <nav class="nav-links">
+                    <a href="{{ url_for('dashboard.overview') }}" class="nav-item">
+                        <img src="{{ url_for('static', filename='img/iconz/analytic-server.png') }}">
+                        Overview
+                    </a>
+                    <a href="{{ url_for('dashboard.get_payments') }}" class="nav-item">
+                        <img src="{{ url_for('static', filename='img/iconz/credit-card.png') }}">
+                        Payments
+                    </a>
+                    <a href="{{ url_for('dashboard.get_orders') }}" class="nav-item">
+                        <img src="{{ url_for('static', filename='img/iconz/purchase-order.png') }}">
+                        Orders
+                    </a>
+                    <a href="{{ url_for('dashboard.get_users') }}" class="nav-item">
+                        <img src="{{ url_for('static', filename='img/iconz/user.png') }}">
+                        Users
+                    </a>
+                </nav>
+            {% endblock %}
+
+            <div class="sidebar-bottom">
+                <button id="settingsBtn" class="settings-btn" type="button">
+                    <img src="{{ url_for('static', filename='img/iconz/settings.png') }}">
+                    Settings
+                </button>
+                <a href="{{ url_for('dashboard.get_profile') }}" class="profile-link">
+                    <div class="profile-badge">
+                        <img src="{{ url_for('static', filename='img/iconz/user-1.png') }}">
+                        Admin
+                    </div>
+                </a>
+                <a href="{{ url_for('dashboard.logout') }}" class="logout-link">
+                    <img src="{{ url_for('static', filename='img/iconz/refer.png') }}">
+                    Sign out
+                </a>
+            </div>
+        </aside>
+        <div class="sidebarVacuum"></div>
+
+        <main class="main-content">
+            <section class="content-body">
+                {% block content %}{% endblock %}
+            </section>
+        </main>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" aria-label="Close settings">&times;</span>
+            <h3>Settings</h3>
+            <div class="form-group">
+                <label>Theme</label>
+                <select id="themeSelector">
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Export Format</label>
+                <select id="exportSelector" onchange="(e)=>{localStorage.setItem('export_formart', e.target.value);console.log(e.target.value);}">
+                    <option value="pdf">PDF</option>
+                    <option value="doc" >DOC</option>
+                    <!-- <option value="docx" >DOCX</option> -->
+                    <option value="excel" >Excel</option>
+                    <!-- <option value="xlsx">Xlsx</option> -->
+                    <option value="csv" disabled >CSV</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sidebarExit = document.querySelector('#sidebarExit');
+        let sidebarMenu = document.querySelector('#sidebarMenu');
+        let navLinks = document.querySelector('.nav-links');
+        let sidebarBottom = document.querySelector('.sidebar-bottom');
+        const current_month = new Date().toISOString()
+
+        //console.log(window);
+
+        function openMenu(){
+            sidebarExit.style.display = "flex";
+            sidebarMenu.style.display = "none";
+            navLinks.style.display = "flex";
+            sidebarBottom.style.display = "flex";
+       
+        }
+
+        function closeMenu(){
+            sidebarExit.style.display = "none";
+            sidebarMenu.style.display = "flex";
+            navLinks.style.display = "none";
+            sidebarBottom.style.display = "none";
+        }
+
+
+
+
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

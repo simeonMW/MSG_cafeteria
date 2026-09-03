@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MSG Cafe Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <h2><span class="brand-mark">MSG</span>Cafe</h2>
+                <p class="auth-subtitle">Admin System Login</p>
+            </div>
+
+            {% if error %}
+                <div class="auth-alert error">{{ error }}</div>
+            {% endif %}
+
+            <form id="loginForm" action="{{ url_for('dashboard.signin') }}" method="post" class="auth-form">
+                <div class="auth-field-group">
+                    <label for="employee_id" class="auth-label">Employee ID</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="employee_id" name="employee_id" class="auth-input font-mono" placeholder="e.g. MSG27785" required>
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="email" class="auth-label">Email Address</label>
+                    <div class="auth-input-wrapper">
+                        <input type="email" id="email" name="email" class="auth-input" placeholder="admin@msgcafe.com" required>
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="password" class="auth-label">Password</label>
+                    <div class="auth-input-wrapper">
+                        <!-- <span class="input-icon"></span> -->
+                        <input type="password" id="password" name="password" class="auth-input font-mono" placeholder="••••••••••••" required>
+                        <button type="button" class="pwd-toggle-btn" id="see-id" onclick="toggleLoginPassword()" title="Toggle password visibility">
+                            <img src="{{ url_for('static', filename='img/iconz/icons8-eye-24.pngs') }}">
+                            <!-- see -->
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="loginSubmitBtn" class="primary-btn auth-btn">
+                    <span>Sign In</span>
+                    <span class="btn-spinner hidden" id="loginSpinner">
+                        <img src="{{ url_for('static', filename='img/iconz/loading.png') }}">
+                    </span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span class="text-muted">Protected System • Authorized Employees Only</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        const passwordInput = document.getElementById('password');
+        const seeButton = document.getElementById('see-id');
+        function toggleLoginPassword() {
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.placeholder = passwordInput.type === 'password' ? "••••••••••••" : 'password';
+            seeButton.innerHTML = passwordInput.type === 'password' ? '<img src="{{ url_for("static", filename="img/iconz/icons8-eye-24.png") }}">' :'<img src="{{ url_for("static", filename="img/iconz/icons8-hide-password-50.png") }}">';
+        }
+        toggleLoginPassword();
+        toggleLoginPassword();
+
+
+
+    </script>
+</body>
+</html>

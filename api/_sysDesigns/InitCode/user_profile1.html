@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile Management - MSG Cafe{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title-section">
+            <h2>Admin Profile Settings</h2>
+            <span class="subtitle">Manage your personal account information and security credentials</span>
+        </div>
+    </div>
+
+    <div class="profile-layout">
+        <!-- Profile Summary Card -->
+        <div class="profile-card avatar-card">
+            <div class="profile-avatar-wrapper">
+                <div class="profile-avatar-lg">MA</div>
+                <button class="avatar-edit-btn" title="Change Avatar">📷</button>
+            </div>
+            <h3 id="profileHeaderName">{{ profile.name }}</h3>
+            <span class="profile-role-badge">System Administrator</span>
+            <div class="profile-meta-info">
+                <span class="text-muted">Employee ID: <strong id="profileHeaderEmpId" class="font-mono">{{ profile.employee_id }}</strong></span>
+            </div>
+        </div>
+
+        <!-- Inline Profile Fields Form -->
+        <div class="profile-card fields-card">
+            <div class="card-header">
+                <h3>Account Information</h3>
+                <span class="subtitle">Click the edit icon on any field to update your details</span>
+            </div>
+
+            <div class="profile-fields-list">
+                <!-- Field 1: Name -->
+                <div class="field-row" id="row-name">
+                    <label class="field-label">User / Full Name</label>
+                    <div class="field-value-container">
+                        <span class="field-display" id="display-name">{{ profile.name }}</span>
+                        <input type="text" id="input-name" class="field-input hidden" value="{{ profile.name }}">
+                    </div>
+                    <div class="field-actions">
+                        <button class="icon-action-btn edit-btn" onclick="enableInlineEdit('name')" title="Edit Field">✏️</button>
+                        <div class="edit-controls hidden" id="controls-name">
+                            <button class="icon-action-btn save-btn" onclick="saveInlineEdit('name')" title="Save">✔️</button>
+                            <button class="icon-action-btn cancel-btn" onclick="cancelInlineEdit('name')" title="Cancel">❌</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Field 2: Employee ID -->
+                <div class="field-row" id="row-employee_id">
+                    <label class="field-label">Employee ID</label>
+                    <div class="field-value-container">
+                        <span class="field-display font-mono text-bold" id="display-employee_id">{{ profile.employee_id }}</span>
+                        <input type="text" id="input-employee_id" class="field-input font-mono hidden" value="{{ profile.employee_id }}">
+                    </div>
+                    <div class="field-actions">
+                        <button class="icon-action-btn edit-btn" onclick="enableInlineEdit('employee_id')" title="Edit Field">✏️</button>
+                        <div class="edit-controls hidden" id="controls-employee_id">
+                            <button class="icon-action-btn save-btn" onclick="saveInlineEdit('employee_id')" title="Save">✔️</button>
+                            <button class="icon-action-btn cancel-btn" onclick="cancelInlineEdit('employee_id')" title="Cancel">❌</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Field 3: Password -->
+                <div class="field-row" id="row-password">
+                    <label class="field-label">Password</label>
+                    <div class="field-value-container">
+                        <span class="field-display font-mono" id="display-password">••••••••••••</span>
+                        <input type="password" id="input-password" class="field-input font-mono hidden" placeholder="Enter new password">
+                    </div>
+                    <div class="field-actions">
+                        <button class="icon-action-btn toggle-pwd-btn" id="toggle-pwd-btn" onclick="togglePasswordDisplay('password')" title="Toggle Visibility">👁️</button>
+                        <button class="icon-action-btn edit-btn" onclick="enableInlineEdit('password')" title="Edit Password">✏️</button>
+                        <div class="edit-controls hidden" id="controls-password">
+                            <button class="icon-action-btn save-btn" onclick="saveInlineEdit('password')" title="Save">✔️</button>
+                            <button class="icon-action-btn cancel-btn" onclick="cancelInlineEdit('password')" title="Cancel">❌</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Field 4: Email -->
+                <div class="field-row" id="row-email">
+                    <label class="field-label">Email Address</label>
+                    <div class="field-value-container">
+                        <span class="field-display" id="display-email">{{ profile.email }}</span>
+                        <input type="email" id="input-email" class="field-input hidden" value="{{ profile.email }}">
+                    </div>
+                    <div class="field-actions">
+                        <button class="icon-action-btn edit-btn" onclick="enableInlineEdit('email')" title="Edit Field">✏️</button>
+                        <div class="edit-controls hidden" id="controls-email">
+                            <button class="icon-action-btn save-btn" onclick="saveInlineEdit('email')" title="Save">✔️</button>
+                            <button class="icon-action-btn cancel-btn" onclick="cancelInlineEdit('email')" title="Cancel">❌</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Field 5: Phone Number -->
+                <div class="field-row" id="row-phone">
+                    <label class="field-label">Phone Number</label>
+                    <div class="field-value-container">
+                        <span class="field-display" id="display-phone">{{ profile.phone }}</span>
+                        <input type="tel" id="input-phone" class="field-input hidden" value="{{ profile.phone }}">
+                    </div>
+                    <div class="field-actions">
+                        <button class="icon-action-btn edit-btn" onclick="enableInlineEdit('phone')" title="Edit Field">✏️</button>
+                        <div class="edit-controls hidden" id="controls-phone">
+                            <button class="icon-action-btn save-btn" onclick="saveInlineEdit('phone')" title="Save">✔️</button>
+                            <button class="icon-action-btn cancel-btn" onclick="cancelInlineEdit('phone')" title="Cancel">❌</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

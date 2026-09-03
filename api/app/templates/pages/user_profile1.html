@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile Management - MSG Cafe{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="page-title-section">
+            <h2>Admin Profile Settings</h2>
+            <span class="subtitle">Manage account information and security credentials</span>
+        </div>
+    </div>
+
+    <div class="profile-layout">
+        <div class="profile-card avatar-card">
+            <div class="profile-avatar-wrapper">
+                <div class="profile-avatar-lg">{{ (user.email or 'A')[:1]|upper }}</div>
+            </div>
+            <h3 id="profileHeaderName">{{ user.email.split('@')[0].title() }}</h3>
+            <span class="profile-role-badge">System Administrator</span>
+            <div class="profile-meta-info">
+                <span class="text-muted">Employee ID: <strong class="font-mono">{{ user.employee_number or 'MSG27785' }}</strong></span>
+            </div>
+        </div>
+
+        <div class="profile-card fields-card">
+            <div class="card-header">
+                <h3>Account Information</h3>
+                <span class="subtitle">Current profile details</span>
+            </div>
+
+            <div class="profile-fields-list">
+                <div class="field-row">
+                    <label class="field-label">Email Address</label>
+                    <div class="field-value-container">
+                        <span class="field-display">{{ user.email }}</span>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <label class="field-label">Employee ID</label>
+                    <div class="field-value-container">
+                        <span class="field-display font-mono text-bold">{{ user.employee_number or 'MSG27785' }}</span>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <label class="field-label">Role</label>
+                    <div class="field-value-container">
+                        <span class="field-display">{{ user.role or 'hr_manager' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

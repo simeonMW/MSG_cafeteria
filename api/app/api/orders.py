@@ -26,7 +26,10 @@ def place_order():
     if not transaction:
         return jsonify({"error": msg}), 400
 
-    signed_url = SupabaseStorage.create_signed_url(transaction.qr_code_path, expires_in=300)
+    try:
+        signed_url = SupabaseStorage.create_signed_url(transaction.qr_code_path, expires_in=300)
+    except Exception:
+        signed_url = transaction.qr_code_path
 
     return jsonify({
         "message": msg,

@@ -1,25 +1,33 @@
 """
-Comprehensive API Test Suite for Cafe Ordering System
-Tests all endpoints with proper authorization, error handling, and role-based access
+Tests all endpoints with proper authorization, error handling, and role based access
 """
+import os
 import requests
 import json
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
-BASE_URL = "https://msg-cafeteria.onrender.com/api"
+load_dotenv()
+
+
+if os.getenv("FLASK_ENV") == "production":
+    BASE_URL = "https://msg-cafeteria.onrender.com/api"
+else:
+    BASE_URL = "http://127.0.0.1:5000/api"
 
 # Test data
 TEST_USERS = {
-    "customer": {"email": "customer@test.mw", "password": "pass123", "role": "customer", "employee_number": "CUST-001"},
-    "chef": {"email": "chef@test.mw", "password": "pass123", "role": "chef"},
-    "hr_manager": {"email": "hr@test.mw", "password": "pass123", "role": "hr_manager", "employee_number": "HR-001"}
+    "customer": {"email": "customer1@test.mw", "password": "pass1234", "role": "customer", "employee_number": "CUST-005"},
+    "chef": {"email": "chef1@test.mw", "password": "pass1234", "role": "chef"},
+    "hr_manager": {"email": "hr1@test.mw", "password": "pass1234", "role": "hr_manager", "employee_number": "HR-005"}
 }
 
-# Store tokens and IDs for use across tests
+# tokens and IDs for use across tests
 tokens = {}
 user_ids = {}
 menu_items = {}
 transaction_ids = {}
+payment_ids = {}
 
 # Test Results Tracking
 test_results = {
@@ -76,7 +84,7 @@ def test_auth_register():
             if "already exists" in str(data):
                 print_test(f"Register {role}", "PASS", "User already exists (continuing)")
                 # Try login to get ID
-                user_ids[role] = user_data.get('user_id', 1)
+                user_ids[role] = user_data.get('user_id')
             else:
                 print_test(f"Register {role}", "FAIL", data)
 
@@ -106,7 +114,7 @@ def verify_customer():
     """Helper to verify customer after HR login"""
     if "hr_manager" in tokens:
         hr_headers = {"Authorization": f"Bearer {tokens['hr_manager']}"}
-        customer_id = user_ids.get("customer", 1)
+        customer_id = user_ids.get("customer")
         resp = requests.post(f"{BASE_URL}/auth/verify-user/{customer_id}", headers=hr_headers)
         success, data = handle_response(resp, 200)
         if success:

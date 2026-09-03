@@ -53,7 +53,7 @@ class AuthService:
                 return None, "Employee Number verification failed."
 
         # 4. Token
-        # If all checks pass, generate the JWT for mobile/web app.
+        # the JWT for mobile/web app, if all checks pass
         token = generate_token(user.id, user.role)
         return {
             "token": token,

@@ -2,7 +2,7 @@ import jwt
 import bcrypt
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import request, jsonify, current_app
+from flask import request, jsonify, current_app,  redirect, session, url_for
 
 
 # --- PASSWORD HASHING (Process 1.1) ---
@@ -53,8 +53,12 @@ def role_required(allowed_roles):
                 auth_header = request.headers['Authorization'].split(" ")
                 if len(auth_header) == 2:
                     token = auth_header[1]
+            elif session['admin_token']:
+                token = session['admin_token']
 
             if not token:
+                if allowed_roles == ['hr_manager']:
+                    return redirect(url_for('dashboard.signin'))
                 return jsonify({"error": "Authentication token is missing"}), 401
 
             try:
@@ -63,14 +67,20 @@ def role_required(allowed_roles):
                 
                 # Role Check
                 if data['role'] not in allowed_roles:
+                    if allowed_roles == ['hr_manager']:
+                        return redirect(url_for('dashboard.signin'))
                     return jsonify({"error": "Access denied: Unauthorized role"}), 403
                 
                 # user data into the request object for use
                 request.user = data
                 
             except jwt.ExpiredSignatureError:
+                if allowed_roles == ['hr_manager']:
+                    return redirect(url_for('dashboard.signin'))
                 return jsonify({"error": "Token has expired. Please log in again."}), 401
             except jwt.InvalidTokenError:
+                if allowed_roles == ['hr_manager']:
+                    return redirect(url_for('dashboard.signin'))
                 return jsonify({"error": "Invalid token. Access denied."}), 401
 
             return f(*args, **kwargs)

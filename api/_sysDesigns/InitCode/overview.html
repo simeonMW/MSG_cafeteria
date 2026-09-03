@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Analytics Overview</h2>
+    <div class="filters">
+        <input type="month" id="monthFilter">
+        <div class="toggle-container">
+            <label class="switch">
+                <input type="checkbox" id="dayViewToggle">
+                <span class="slider round"></span>
+            </label>
+            <span>Day View</span>
+            <input type="date" id="daySelector" class="hidden">
+        </div>
+    </div>
+</div>
+
+<div class="charts-container">
+    <div class="chart-card">
+        <h3>User Order Ratio</h3>
+        <canvas id="ratioChart"></canvas>
+    </div>
+    <div class="chart-card">
+        <h3>Total Orders</h3>
+        <canvas id="ordersChart"></canvas>
+    </div>
+</div>
+{% endblock %}

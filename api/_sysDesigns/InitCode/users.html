@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}User Management - MSG Cafe{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Top Action Bar -->
+    <div class="page-header">
+        <div class="page-title-section">
+            <h2>User Management</h2>
+            <span class="subtitle">Manage cafe customer accounts and verification statuses</span>
+        </div>
+        
+        <div class="header-controls">
+            <!-- Filter & Search Section -->
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    id="userSearchInput" 
+                    placeholder="Search by ID, Name, or Email..." 
+                    onkeyup="filterUserTable()"
+                >
+            </div>
+            
+            <div class="filter-dropdown-wrapper">
+                <select id="statusFilter" class="select-filter" onchange="filterUserTable()">
+                    <option value="all">All Verification States</option>
+                    <option value="verified">Verified Only</option>
+                    <option value="unverified">Unverified Only</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Data Table -->
+    <div class="table-card">
+        <table class="data-table" id="usersTable">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Cust. ID</th>
+                    <th style="width: 30%;">Name</th>
+                    <th style="width: 35%;">Email</th>
+                    <th style="width: 20%; text-align: center;">Verified</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                {% for user in users %}
+                <tr data-user-id="{{ user.id }}" data-verified="{{ 'true' if user.verified else 'false' }}">
+                    <td class="font-mono text-bold">{{ user.id }}</td>
+                    <td>
+                        <div class="user-info-cell">
+                            <div class="user-avatar-sm">{{ user.name[:1] }}</div>
+                            <span>{{ user.name }}</span>
+                        </div>
+                    </td>
+                    <td class="text-muted">{{ user.email }}</td>
+                    <td class="text-center">
+                        <label class="custom-checkbox-label">
+                            <input 
+                                type="checkbox" 
+                                class="user-verify-checkbox" 
+                                {% if user.verified %}checked{% endif %}
+                                onchange="toggleUserVerification('{{ user.id }}', this.checked)"
+                            >
+                            <span class="checkmark"></span>
+                        </label>
+                    </td>
+                </tr>
+                {% else %}
+                <tr id="noResultsRow">
+                    <td colspan="4" class="empty-table-msg">No user records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

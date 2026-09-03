@@ -44,6 +44,7 @@ def get_inventory():
     role = request.user.get('role')
     items, error = MenuService.get_full_inventory(role)
     
+    
     if error:
         return jsonify({"error": error}), 403
     return jsonify(items), 200

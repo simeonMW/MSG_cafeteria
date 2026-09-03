@@ -21,10 +21,10 @@ class Config:
     JWT_ALGORITHM = "HS256"
     
     # Token expiration time (Process 1.2: Authentication)
-    # Shorter durations (8-12 hours) are better for security audits.
+    # Shorter durations are better for security.
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
 
-    # 2. DATA STORE (D1, D2, D3)
+    # 2. DATA STORE (D1, D2, D3) // D4 added for batch payments     ## are switched off for dev env
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
     DB_HOST = os.getenv("DB_HOST")
@@ -33,16 +33,17 @@ class Config:
 
     DATABASE_URL = os.getenv("DATABASE_URL")
 
-    if DATABASE_URL:
-        if DATABASE_URL.startswith("postgresql://"):
-            SQLALCHEMY_DATABASE_URI = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
-        else:
-            SQLALCHEMY_DATABASE_URI = DATABASE_URL
-    elif DB_USER and DB_PASSWORD and DB_HOST and DB_NAME:
-        SQLALCHEMY_DATABASE_URI = (
-            f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-            "?sslmode=require"
-        )
+    if os.getenv("FLASK_ENV") == "production":
+        if DATABASE_URL:
+            if DATABASE_URL.startswith("postgresql://"):
+                SQLALCHEMY_DATABASE_URI = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+            else:
+                SQLALCHEMY_DATABASE_URI = DATABASE_URL
+        elif DB_USER and DB_PASSWORD and DB_HOST and DB_NAME:
+            SQLALCHEMY_DATABASE_URI = (
+                f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+                "?sslmode=require"
+            )
     else:
         SQLALCHEMY_DATABASE_URI = "sqlite:///cafe_system.db"
 
@@ -52,7 +53,7 @@ class Config:
         #"connect_args": {"sslmode": "require"},
     }
 
-    # Use Supabase as the cloud storage backend for generated assets.
+    # cloud storage backend for generated assets. (Supabase)
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
     SUPABASE_STORAGE_BUCKET = os.getenv("SUPABASE_STORAGE_BUCKET", "public")
@@ -70,9 +71,10 @@ class Config:
     QR_FOLDER = os.path.join(UPLOAD_FOLDER, 'qrcodes') 
     """
 
-    # 4. AUDIT & LOGGING
-    # Toggle for debug mode (Should be False in production audits)
+    # 4. LOGGING
+    # Toggle for debug mode (False in production audits)
     DEBUG = os.getenv("FLASK_DEBUG", "False") == "True"
+    ENV = os.getenv("FLASK_ENV")
 
     @staticmethod
     def init_app(app):

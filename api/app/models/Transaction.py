@@ -12,11 +12,12 @@ class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     # Relationships (Foreign Keys)
-    # Linked to User (Customer) and MenuItem
+    # Linked to User (Customer), MenuItem, and payment
     customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'), nullable=False)
+    payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'), nullable=True)
     
-    # Financial Audit Integrity
+    # Financial Integrity
     # We store the price at the moment of the transaction to prevent 
     # historical data corruption if the Menu price is updated later.
     order_price = db.Column(db.Float, nullable=False)
@@ -27,8 +28,10 @@ class Transaction(db.Model):
     qr_code_path = db.Column(db.String(255), nullable=True) # Path to generated image
     
     # Process 3.4: Fulfillment Status
-    # Statuses: 'pending', 'checked_out', 'cancelled'
+    # Order Statuses: 'pending', 'checked_out', 'cancelled'
     status = db.Column(db.String(20), default='pending', nullable=False)
+    # payment statuses: 'paid', 'unpaid'
+    # payment_status = db.Column(db.String(20), default='unpaid', nullable=False)
     
     # Auditing & Control
     # Precise timestamping for Process 4.0 (Reporting)
@@ -47,6 +50,7 @@ class Transaction(db.Model):
             "transaction_id": self.id,
             "customer_id": self.customer_id,
             "item_id": self.item_id,
+            "payment_id": self.payment_id,
             "amount": self.order_price,
             "token": self.token,
             "status": self.status,

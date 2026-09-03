@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Orders Management</h2>
+    <input type="month" id="orderMonthFilter">
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Item</th>
+            <th>Date</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.item }}</td>
+            <td>{{ order.date }}</td>
+            <td>${{ order.amount }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="fixed-bottom-action">
+    <button id="initiatePaymentBtn" class="primary-btn">💳 Initiate Payment</button>
+</div>
+
+<!-- Initiate Payment Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content center-text">
+        <span class="close-btn" id="closePaymentModal">&times;</span>
+        <h3>Batch Payment</h3>
+        <input type="month" class="modal-input">
+        <p>Total Orders: <strong>142</strong></p>
+        <p>Total Amount: <strong>$1,250.00</strong></p>
+        <button class="primary-btn mt-1">Process Payment</button>
+    </div>
+</div>
+{% endblock %}

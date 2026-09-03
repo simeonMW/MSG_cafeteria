@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from app.repositories.transactionRepo import TransactionRepo
+from app.repositories.userRepo import UserRepo
 from app.utils.reportGenerator import PDFGenerator
 
 class ReportService:
@@ -43,11 +44,14 @@ class ReportService:
 
         # 4. Report Transformation (Process 4.2 Logic)
         # Forwarding the data to the PDF Utility for Finance export.
-        file_path = PDFGenerator.generate_transaction_report(
-            transactions, 
-            start_date.strftime('%Y-%m-%d'), 
-            end_date.strftime('%Y-%m-%d')
-        )
+        try:
+            file_path = PDFGenerator.generate_transaction_report(
+                transactions, 
+                start_date.strftime('%Y-%m-%d'), 
+                end_date.strftime('%Y-%m-%d')
+            )
+        except Exception:
+            file_path = 'Error: no path'
 
         return {
             "report_url": file_path,

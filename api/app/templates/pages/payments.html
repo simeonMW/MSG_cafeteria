@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Payments - MSG Cafe{% endblock %}
+
+{% block active %}
+    <nav class="nav-links">
+        <a href="{{ url_for('dashboard.overview') }}" class="nav-item ">
+            <img src="{{ url_for('static', filename='img/iconz/analytic-server.png') }}">
+            Overview
+        </a>
+        <a href="{{ url_for('dashboard.get_payments') }}" class="nav-item active">
+            <img src="{{ url_for('static', filename='img/iconz/credit-card.png') }}">
+            Payments
+        </a>
+        <a href="{{ url_for('dashboard.get_orders') }}" class="nav-item ">
+            <img src="{{ url_for('static', filename='img/iconz/purchase-order.png') }}">
+            Orders
+        </a>
+        <a href="{{ url_for('dashboard.get_users') }}" class="nav-item">
+            <img src="{{ url_for('static', filename='img/iconz/user.png') }}">
+            Users
+        </a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Top Action Bar -->
+    <div class="page-header">
+        <div class="page-title-section">
+            <h2>Payments & Transaction Records</h2>
+            <span class="subtitle">View processed batch payments and transaction breakdowns</span>
+        </div>
+        
+        <div class="header-controls">
+            <!-- Global / Local Search input -->
+            <div class="search-box">
+                <span class="search-icon"></span>
+                <input 
+                    type="text" 
+                    id="paymentSearchInput" 
+                    placeholder="Pay ID or Order ID..." 
+                    onkeyup="filterPaymentsTable()"
+                >
+            </div>
+
+            <div class="search-box">
+                <span></span>
+                <input type="month" id="paymentsMonthFilter" aria-label="Month filter" value="{{ active_month }}" onchange="set_month(this.value)">
+            </div>
+            
+            <div class="filter-dropdown-wrapper">
+                <select id="paymentStatusFilter" class="select-filter" onchange="filterPaymentsTable()">
+                    <option value="all">All Statuses</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Failed">Failed</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payments Table -->
+    <div class="table-card">
+        <table class="data-table" id="paymentsTable">
+            <thead>
+                <tr>
+                    <th>Pay ID</th>
+                    <th>Cost (MK)</th>
+                    <th>Period</th>
+                    <th>Initiated On</th>
+                    <th>Status</th>
+                    <th class="text-center">Orders Count</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="paymentsTableBody">
+                {% for pay in payments %}
+                    <tr class="clickable-row" data-pay-id="{{ pay.id }}" data-status="{{ pay.status }}" onclick="openPaymentDetailModal('{{ pay.id }}')">
+                        <td class="font-mono">{{ pay.id }}</td>
+                        <td class="">MK {{ "%.2f"|format(pay.amount) }}</td>
+                        <td class="">{{ pay.period }}</td>
+                        <td class="text-muted">{{ pay.date }}</td>
+                        <td>
+                            <span class="badge badge-{{ pay.status|lower }}">
+                                {{ pay.status }}
+                            </span>
+                        </td>
+                        <td class="text-center font-mono">{{ pay.orders_count if pay.orders_count else '12' }}</td>
+                        <td class="text-right action-cells" onclick="event.stopPropagation()">
+                            <button class=" btn-secondary icon-btn" title="Download Record" onclick="downloadPaymentRecord('{{ pay.id }}')">export</button>
+                            <button class="btn-secondary icon-btn" title="View Detail" onclick="openPaymentDetailModal('{{ pay.id }}')">view<!-- <img src='{{ url_for("static", filename="img/iconz/icons8-eye-24.png") }}'> --></button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr id="noPaymentsRow">
+                        <td colspan="6" class="empty-table-msg font-mono">No payment records found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Transaction Details Modal -->
+<div id="paymentDetailModal" class="modal">
+    <div class=" modal-content  modal-lg" >
+        <button class="close-btn" onclick="closePaymentDetailModal()" style="border: 0px; background-color: transparent; position: absolute; color: var(--text-main);">&times;</button>
+        <div class=" modal-header-branding">
+            <div class="auth-brand brand-title">
+                <h2><span class="brand-mark">MSG</span>Cafe</h2>
+                <div class="auth-subtitle">Automated Payment Clearing Report</div>
+            </div>
+        </div>
+
+        <div class="meta-n-controls">
+            <div class="report-meta-grid">
+                <div class="meta-item">
+                    <span class="text-bold meta-label">Reporting Period</span>
+                    <span class="subtitle meta-value" id="modalPeriod">N/A</span>
+                </div>
+                <div class="meta-item">
+                    <span class="text-bold meta-label">Generated Timestamp</span>
+                    <span class="subtitle meta-value" id="modalTimestamp">N/A</span>
+                </div>
+                <div class="meta-item">
+                    <span class=" text-bold meta-label">Payment ID</span>
+                    <span class="subtitle meta-value font-mono " id="modalPayId">N/A</span>
+                </div>
+                <div class="meta-item">
+                    <span class="text-bold meta-label">Status</span>
+                    <span id="modalStatusBadge" class="badge badge-unpaid">N/A</span>
+                </div>
+            </div>
+
+            <!-- Modal Actions -->
+            <div class="report-meta-grid modal-controls">
+                <button class="primary-btn" onclick="downloadPaymentRecordFromModal()" style="width: 100%;">Export Document</button>
+                <div class="control-group">
+                    <button class="btn-secondary " onclick="window.print()">Print</button>
+                    <button class="btn-secondary" onclick="sharePaymentReport()">Share</button>
+                    <button class="btn-secondary" onclick="markPaymentAsPaid()">Mark as Paid</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Itemized Orders Table inside Modal -->
+        <div class="table-card modal-table-card">
+            <table class="data-table modal-data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Email</th>
+                        <th>Item</th>
+                        <th>Date</th>
+                        <th class="text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="modalOrdersTableBody">
+                    <!-- Loaded dynamically via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Footer Bar -->
+        <div class="auth-footer modal-summary-bar" style="margin-bottom: 40px;">
+            <span>Total Calculated Amount:</span>
+            <strong id="modalTotalAmount" class="modal-total-price">MK 0.00</strong>
+        </div>
+
+        
+</div>
+{% endblock %}

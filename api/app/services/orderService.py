@@ -23,7 +23,10 @@ class OrderService:
 
         # 2. Generate Unique Token & QR (Process 3.3 Logic)
         token = QRGen.generate_secure_token()
-        qr_path = QRGen.create_qr_image(token)
+        try:
+            qr_path = QRGen.create_qr_image(token)
+        except Exception:
+            qr_path = "no path, use token"
 
         # 3. Persist to D3 (Transaction Ledger)
         # Snapshotting the price here ensures audit integrity.

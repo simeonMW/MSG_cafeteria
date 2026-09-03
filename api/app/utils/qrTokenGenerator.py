@@ -23,8 +23,7 @@ class QRGen:
     def create_qr_image(token_string):
         """
         Generates a QR code image from the provided token.
-        In a production environment, this could save to an S3 bucket or local storage.
-        For this implementation, we define the logic for local filesystem persistence.
+        saves to a bucket, In a production environment
         """
         # QR instance
         qr = qrcode.QRCode(

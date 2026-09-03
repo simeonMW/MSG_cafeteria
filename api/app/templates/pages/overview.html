@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Overview - MSG Cafe{% endblock %}
+
+{% block active %}
+    <nav class="nav-links">
+        <a href="{{ url_for('dashboard.overview') }}" class="nav-item active">
+            <img src="{{ url_for('static', filename='img/iconz/analytic-server.png') }}">
+            Overview
+        </a>
+        <a href="{{ url_for('dashboard.get_payments') }}" class="nav-item">
+            <img src="{{ url_for('static', filename='img/iconz/credit-card.png') }}">
+            Payments
+        </a>
+        <a href="{{ url_for('dashboard.get_orders') }}" class="nav-item ">
+            <img src="{{ url_for('static', filename='img/iconz/purchase-order.png') }}">
+            Orders
+        </a>
+        <a href="{{ url_for('dashboard.get_users') }}" class="nav-item">
+            <img src="{{ url_for('static', filename='img/iconz/user.png') }}">
+            Users
+        </a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+<script>
+
+    //console.log("{{stats.day_orders}}");
+
+</script>
+
+<div class="page-header">
+    <div class="page-title-section">
+        <h2>Overview</h2>
+        <span class="subtitle">Operational summary and analytics</span>
+    </div>
+    <div class="header-controls">
+        <!-- Filter & Search Section -->
+        <div class="search-box">
+            <span class="search-icon"></span>
+            <input 
+                type="search" 
+                id="globalSearchInput" 
+                placeholder="Global search..." 
+                onkeyup=""
+            >
+        </div>
+        <div class="search-box">
+            <span></span>
+            <input type="month" id="monthFilter" aria-label="Month filter" value="{{ active_month }}" onchange="set_month(this.value)">
+        </div>
+    </div>
+</div>
+
+<div class="charts-container">
+    <div class="chart-card">
+        <h3>User Order Ratio</h3>
+        <div class="donut-wrap">
+            {% if stats.users_orders_ratio.__len__() > 3 %}
+                <div class="donut" id="donutChart" data-value="{{ stats.users_orders_ratio[0:2] }}"></div>
+                <div class="donut-center" style="text-align: center;">{{ stats.users_orders_ratio[0:2] }}% of <br>users ordered</div>
+            {% else %}
+                <div class="donut" id="donutChart" data-value="{{ stats.users_orders_ratio }}"></div>
+                <div class="donut-center" style="text-align: center;">{{ stats.users_orders_ratio }}% of <br>users ordered</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3>Total Orders</h3>
+        <div class="chart-box bar-row" id="barChart" data-series="{{stats.day_orders}}"></div>
+    </div>
+</div>
+
+<div class="summary-grid">
+    <div class="table-card" style="margin-bottom: 6px;">
+        <div class="text-muted">Revenue</div>
+        <div class="text-bold" style="font-size:1.5rem; margin-top:6px;">MK {{ '%.2f'|format(stats.total_revenue) }}</div>
+    </div>
+    <div class="table-card" style="margin-bottom: 6px;">
+        <div class="text-muted">Pending payments</div>
+        <div class="text-bold" style="font-size:1.5rem; margin-top:6px;">{{ stats.pending_payments }}</div>
+    </div>
+    <div class="table-card" style="margin-bottom: 6px;">
+        <div class="text-muted">Verified users</div>
+        <div class="text-bold" style="font-size:1.5rem; margin-top:6px;">{{ stats.verified_users }}</div>
+    </div>
+    <div class="table-card" style="margin-bottom: 6px;">
+        <div class="text-muted">Orders</div>
+        <div class="text-bold" style="font-size:1.5rem; margin-top:6px;">{{ stats.total_orders }}</div>
+    </div>
+</div>
+{% endblock %}
