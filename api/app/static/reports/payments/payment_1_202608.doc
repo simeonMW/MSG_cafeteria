@@ -1,0 +1,20 @@
+MSG Cafe Payment Record
+Reporting Period: 2026-08
+Generated: 2026-09-02 13:19:35 UTC
+Payment ID: 1
+Payment Status: unpaid
+
+Order ID | Customer | Item | Date | Amount
+20 | customer1@test.mw | Cafe Order | 2026-08-31 | $200.00
+19 | customer1@test.mw | Cafe Order | 2026-08-31 | $200.00
+17 | customer1@test.mw | Cafe Order | 2026-08-31 | $200.00
+16 | customer1@test.mw | Cafe Order | 2026-08-31 | $200.00
+14 | customer1@test.mw | Cafe Order | 2026-08-27 | $200.00
+13 | customer1@test.mw | Cafe Order | 2026-08-27 | $200.00
+11 | customer1@test.mw | Cafe Order | 2026-08-25 | $200.00
+10 | customer1@test.mw | Cafe Order | 2026-08-25 | $200.00
+8 | customer1@test.mw | Cafe Order | 2026-08-25 | $200.00
+7 | customer1@test.mw | Cafe Order | 2026-08-25 | $200.00
+5 | customer1@test.mw | Cafe Order | 2026-08-25 | $200.00
+4 | customer1@test.mw | Cafe Order | 2026-08-25 | $200.00
+Total Amount: $2400.00

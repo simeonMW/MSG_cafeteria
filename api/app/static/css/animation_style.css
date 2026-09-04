@@ -1,0 +1,26 @@
+@keyframes spin { 
+    to {
+        transform: rotate(360deg);
+    } 
+}
+
+@keyframes baqAnimation {
+    0% {
+        background: linear-gradient(60deg, #1f2937, #6b7280);
+    }
+    20% {
+        background: linear-gradient(120deg, #1f2937, #6b7280);
+    }
+    40% {
+        background: linear-gradient(180deg, #1f2937, #6b7280);
+    }
+    60% {
+        background: linear-gradient(240deg, #1f2937, #6b7280);
+    }
+    80% {
+        background: linear-gradient(300deg, #1f2937, #6b7280);
+    }
+    100% {
+        background: linear-gradient(360deg, #1f2937, #6b7280);
+    }
+}
