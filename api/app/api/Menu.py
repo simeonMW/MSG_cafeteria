@@ -68,6 +68,7 @@ def add_item():
     } """
     #data.picture_url = menu_item_image_url
     #print(data)
+    
     role = request.user.get('role')
     
     # Basic Input Validation

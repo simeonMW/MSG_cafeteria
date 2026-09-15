@@ -51,10 +51,14 @@ def verify_user(user_id):
     Endpoint for Process 1.3: Verification.
     Strictly protected; only the HR Web App can trigger this.
     """
-    # The role_required decorator ensures request.user is populated via JWT
+    # via JWT
     admin_role = request.user.get('role')
+
+    bi = str(request.args.get('bi'))
+
+    #print(f"\n{bi}\n")
     
-    success, msg = AuthService.verify_account(user_id, admin_role)
+    success, msg = AuthService.verify_account(user_id, admin_role, bi)
     if not success:
         return jsonify({"error": msg}), 400
 

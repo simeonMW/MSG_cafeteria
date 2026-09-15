@@ -5,12 +5,12 @@ from functools import wraps
 from flask import request, jsonify, current_app,  redirect, session, url_for
 
 
-# --- PASSWORD HASHING (Process 1.1) ---
+# PASSWORD HASHING (Process 1.1)
 
 def hash_pwd(password):
     """
-    Control: Never store plain text.
-    Uses Bcrypt with a salt to protect against rainbow table attacks.
+    transforms plain text.
+    Bcrypt with a salt, protects against rainbow table attacks.
     """
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
@@ -21,22 +21,34 @@ def verify_pwd(password, hashed):
     """
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-# --- JWT MANAGEMENT (Process 1.2) ---
+#  JWT MANAGEMENT (Process 1.2)
 
 def generate_token(user_id, role):
     """
     Generates a secure identity token.
-    The payload includes the user ID and role for authorization.
+    user ID and role are for authorization.
     """
     payload = {
         'user_id': user_id,
         'role': role,
         'exp': datetime.utcnow() + current_app.config['JWT_ACCESS_TOKEN_EXPIRES'],
-        'iat': datetime.utcnow()
+        'iat': datetime.utcnow(),
+        'type': 'identity'
     }
     return jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
 
-# --- AUTHORIZATION DECORATORS (Access Control) ---
+""" def refresh_token(user_id, role):
+    #refreshes a secure identity token.
+    payload = {
+        'user_id': user_id,
+        'role': role,
+        'exp': datetime.utcnow() + timedelta(days=7),
+        'iat': datetime.utcnow(),
+        'type': 'refresh'
+    }
+    return jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256') """
+
+#  AUTHORIZATION DECORATORS (Access Control)
 
 def role_required(allowed_roles):
     """
@@ -47,9 +59,9 @@ def role_required(allowed_roles):
         def decorated_function(*args, **kwargs):
             token = None
             
-            # Check for Authorization header
+            # authorization header
             if 'Authorization' in request.headers:
-                # Format: "Bearer <token>"
+                # format: "Bearer <token>"
                 auth_header = request.headers['Authorization'].split(" ")
                 if len(auth_header) == 2:
                     token = auth_header[1]
@@ -62,10 +74,10 @@ def role_required(allowed_roles):
                 return jsonify({"error": "Authentication token is missing"}), 401
 
             try:
-                # Decode and verify the signature
+                # decode and verify the signature
                 data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
                 
-                # Role Check
+                # role Check
                 if data['role'] not in allowed_roles:
                     if allowed_roles == ['hr_manager']:
                         return redirect(url_for('dashboard.signin'))

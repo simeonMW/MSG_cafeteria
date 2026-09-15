@@ -17,7 +17,7 @@ class UserRepo:
             password=user_data.get('password'),
             employee_number=user_data.get('employee_number'),
             role=user_data.get('role'),
-            is_verified=True #False must be default state until HR action
+            is_verified=True #default state until HR action
         )
         db.session.add(new_user)
         db.session.commit()
@@ -51,6 +51,8 @@ class UserRepo:
         Allows HR to update the 'is_verified' flag in D1.
         """
         user = User.query.get(user_id)
+        #print(f"\n{user.is_verified}, {status}\n")
+
         if user:
             user.is_verified = status
             db.session.commit()

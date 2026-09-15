@@ -269,9 +269,9 @@ button, input, select { font: inherit; }
 .clickable-row {
     cursor: pointer;
 }
-.modal-data-table {
+/* .modal-data-table {
     
-}
+} */
 .badge {
     display: inline-flex;
     border-radius: 999px;

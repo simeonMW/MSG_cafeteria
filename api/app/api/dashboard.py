@@ -72,7 +72,6 @@ def pay():
         payment_status='unpaid',
         created_at=datetime.utcnow(),
     )
-    from app.models.user import db
     db.session.add(payment)
     db.session.flush()
 
@@ -131,7 +130,6 @@ def mark_payment_paid(payment_id):
     payment = Payment.query.get_or_404(payment_id)
     payment.payment_status = 'paid'
     payment.checked_out_at = datetime.utcnow()
-    from app.models.user import db
     db.session.commit()
     return jsonify({"status": "success", "payment_id": payment.id, "status": payment.payment_status})
 

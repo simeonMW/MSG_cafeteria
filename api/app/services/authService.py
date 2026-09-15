@@ -42,9 +42,9 @@ class AuthService:
             return None, "Invalid email or password."
 
         # 2. Status Check (Process 1.3 Logic)
-        # Prevent access if the HR manager has not verified the account.
-        if not user.is_verified and user.role == 'customer':
-            return None, "Account pending verification by HR Manager."
+        # Prevent access if the Admin has not verified the account.
+        if not user.is_verified :#and user.role == 'customer':
+            return None, "Account verification failed. Contact Admin."
 
         # 3. Role-Specific Identification Check
         # certain roles must provide an Employee Number.
@@ -62,15 +62,17 @@ class AuthService:
 
 
     @staticmethod
-    def verify_account(user_id, admin_role):
+    def verify_account(user_id, admin_role, fg):
         """
         Logic for Process 1.3 (Verification).
         Only allow the hr_manager to change the verification status.
         """
         if admin_role != 'hr_manager':
             return False, "Unauthorized: Only HR can verify accounts."
+
+        statuc = False if fg=="1" else True
         
-        user = UserRepo.update_verification_status(user_id, True)
+        user = UserRepo.update_verification_status(user_id, statuc)
         if user:
             return True, f"User {user.email} verified successfully."
         return False, "User not found."

@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-container">
+<!-- <div class="page-container"> -->
     <!-- Top Action Bar -->
     <div class="page-header">
         <div class="page-title-section">
@@ -62,7 +62,7 @@
                     <th style="width: 15%;">Cust. ID</th>
                     <th style="width: 30%;">Name</th>
                     <th style="width: 35%;">Email</th>
-                    <th style="width: 20%; text-align: center;">Verified</th>
+                    <th style="width: 20%; ">Verified</th>
                 </tr>
             </thead>
             <tbody id="userTableBody">
@@ -71,7 +71,7 @@
                     <td class="font-mono">{{ user.id }}</td>
                     <td>
                         <div class="user-info-cell">
-                            <div class="user-avatar-sm">{{ user.name[:1] }}</div>
+                            <!-- <div class="user-avatar-sm">{{ user.name[:1] }}</div> -->
                             <span>{{ user.name }}</span>
                         </div>
                     </td>
@@ -82,7 +82,7 @@
                                 type="checkbox" 
                                 class="user-verify-checkbox" 
                                 {% if user.verified %}checked{% endif %}
-                                onchange="toggleUserVerification('{{ user.id }}', this.checked)"
+                                onchange="toggleUserVerification('{{ user.id }}', '{{ user.email }}',  '{{ 1 if user.verified else 0 }}')"
                             >
                             <span class="checkmark"></span>
                         </label>
@@ -96,5 +96,143 @@
             </tbody>
         </table>
     </div>
-</div>
+
+    <div class="fixed-bottom-action">
+        <button id="initiatePaymentBtn" class="primary-btn">Register New User</button>
+    </div>
+
+    
+    <div id="paymentModal" class="modal">
+        <div class="modal-content center-text" id="create-user-content">
+            <span class="close-btn" id="closeCreateUserModal">&times;</span>
+            <h3>Add New User</h3>
+
+            <form id="createUserForm" class="auth-form">
+                <div class="auth-field-group">
+                    <label for="employee_id" class="auth-label">Employee ID</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="employee_id" name="employee_number" class="auth-input font-mono" placeholder="e.g. MSG27785" required>
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="email" class="auth-label">Email Address</label>
+                    <div class="auth-input-wrapper">
+                        <input type="email" id="email" name="email" class="auth-input" placeholder="admin@msgcafe.com" required>
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="password" class="auth-label">Password</label>
+                    <div class="auth-input-wrapper">
+                        <!-- <span class="input-icon"></span> -->
+                        <input 
+                            type="text" id="password" name="password" value="msgCafePass-{{ session['active_month'] }}"
+                            class="auth-input font-mono" placeholder="e.g msgCafePass" required disabled
+                        >
+                        <!-- <button type="button" class="pwd-toggle-btn" id="see-id" onclick="toggleLoginPassword()" title="Toggle password visibility">
+                            <img src="{{ url_for('static', filename='img/iconz/icons8-eye-24.png') }}">
+                        </button> -->
+                    </div>
+                </div>
+
+                <button id="create_user" class="primary-btn auth-btn" >
+                    <span>Register User</span>
+                    <span class="btn-spinner hidden" id="loginSpinner">
+                        <img src="{{ url_for('static', filename='img/iconz/loading.png') }}">
+                    </span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span class="text-muted">New user must be current MSG employee<br>
+                    <span style="opacity: 0.5;"> password must be reset upon first login</span>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        const create_user_button = document.querySelector("#create_user");
+        const payment_modal_content = document.querySelector("#create-user-content");
+
+
+        create_user_button.addEventListener("click", async (e)=>{
+            e.preventDefault();
+
+            let email = document.querySelector("#email").value;
+            let passwd = document.querySelector("#password").value;
+            let emp_num = document.querySelector("#employee_id").value;
+
+            console.log(email , passwd , emp_num);
+
+            if (!(email && passwd && emp_num)) {
+                return window.alert("\nMissing Credentials!!!\n\n\tTry Again\n");
+            }
+
+            let confirmation = window.confirm("\nconfirm User Registration\n");
+
+            if (!confirmation) {
+                return window.alert("\nUser Registration Cancelled\n");
+            }
+
+            const new_user_mu_bizzo = {
+                email: email, 
+                password: passwd,
+                employee_number : emp_num,
+                role: "customer"  
+            }
+
+            try {
+                const respoC = await fetch(
+                    "{{ url_for('auth.register') }}",
+                    {
+                        method: "POST",
+                        headers : {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify( new_user_mu_bizzo )
+                    }
+                );
+                response = await respoC.json();
+                //console.log(response);
+                const _user = response.user_id;
+                const _message = response.message;
+
+                if ( !(_user && _message)) {
+                    console.log(response.error);
+                    throw response.error;
+                } 
+                //setTimeout(window.open("{{ url_for('dashboard.get_payments') }}", "_self"), 5000);
+                
+                
+                payment_modal_content.innerHTML = '\
+                    <h3>New User Added</h3>\
+                    <p>Employee Number : <strong>'+emp_num+'</strong></p>\
+                    <p>Password  : <strong>'+passwd+'</strong></p>\
+                    <p>Email : <strong>'+email+'</strong></p>\
+                    <a href="/admin/users">\
+                        <button class="primary-btn mt-1" onclick="()=>{window.open("/admin/users", "_self")};">\
+                            Return\
+                            <span class="btn-spinner hidden" id="loginSpinner">\
+                                <img src="{{ url_for("static", filename="img/iconz/loading.png") }}">\
+                            </span>\
+                        </button>\
+                    </a>\
+                    <div class="auth-footer">\
+                        <span class="text-muted">Password must be changed ASAP</span>\
+                    </div>\
+                '
+
+            } catch (error) {
+                console.log("User Registration Failed");
+                window.alert("User Registration Failed");
+
+            }
+        })
+
+    </script>
+
+<!-- </div> -->
 {% endblock %}

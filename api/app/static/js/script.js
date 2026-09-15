@@ -155,12 +155,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const initiatePaymentBtn = document.getElementById('initiatePaymentBtn');
+    const createUserBtn = document.getElementById('create_user');
     const paymentModal = document.getElementById('paymentModal');
+
     if (initiatePaymentBtn && paymentModal) {
         initiatePaymentBtn.addEventListener('click', () => {
             paymentModal.style.display = 'block';
         });
     }
+
+
 });
 
 window.handleLoginSubmit = function () {
@@ -220,7 +224,8 @@ window.filterOrdersTable = function () {
 
 window.filterUserTable = function () {
     const input = document.getElementById('userSearchInput');
-    const rows = document.querySelectorAll('#userTableBody tr');
+    const rows = document
+    .querySelectorAll('#userTableBody tr');
     rows.forEach((row) => {
         const text = row.textContent.toLowerCase();
         const show = !input || text.includes(input.value.toLowerCase());
@@ -228,10 +233,39 @@ window.filterUserTable = function () {
     });
 };
 
-window.toggleUserVerification = function (userId, checked) {
-    if (window.confirm(`Update verification for user ${userId}?`)) {
+window.toggleUserVerification = async function (userId, userName, checked) {
+    if (window.confirm(`Update verification for user ${userName}?`)) {
+
         console.log('Verification toggle', userId, checked);
+
+        try {
+            const respoC = await fetch(
+                "/api/auth/verify-user/"+userId+"?bi="+checked,
+                {
+                    method: "POST",
+                    headers : {
+                        "Content-Type": "application/json"
+                    },
+                    //body: JSON.stringify(  )
+                }
+            )
+            response = await respoC.json();
+            console.log(response);
+
+            if ( response.error){
+                console.log(response.error);
+                throw response.error;
+            }
+
+            return window.alert("User Modification Success");
+
+        } catch (error) {
+            console.log("User Modification Failed");
+            return window.alert("User Modification Failed");
+
+        }
     }
+    return window.alert("User Modification Failed");
 };
 
 window.currentPaymentId = null;
@@ -282,7 +316,7 @@ window.downloadPaymentRecord = function (payId, format = 'pdf') {
     let format_selection = document.querySelector('#exportSelector');
     let format_stored = localStorage.getItem('export_formart');
     if (format_stored || format_selection.value) {
-        console.log(format_selection.value);
+        //console.log(format_selection.value);
         format = format_stored ? format_stored : format_selection.value;
     }
     if (!payId) return;
@@ -335,6 +369,7 @@ window.markPaymentAsPaid = function () {
                 if (statusCell) statusCell.textContent = 'paid';
             }
             window.alert('Payment marked as paid.');
+            window.open(document.URL, "_self");
         })
         .catch(() => {
             window.alert('Unable to update payment status.');
