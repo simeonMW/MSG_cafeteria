@@ -13,7 +13,7 @@ load_dotenv()
 
 
 class PaymentReportGenerator:
-    """Build month-scoped payment records in PDF/Excel/CSV/DOC formats."""
+    """Build month scoped payment records in PDF/Excel/CSV/DOC formats."""
 
     @staticmethod
     def _report_dir():
@@ -85,9 +85,9 @@ class PaymentReportGenerator:
             pdf.cell(50, 8, PaymentReportGenerator._safe_text(row['customer'])[:20], 1, 0, 'C')
             pdf.cell(55, 8, PaymentReportGenerator._safe_text(row['item'])[:18], 1, 0, 'C')
             pdf.cell(25, 8, PaymentReportGenerator._safe_text(row['date'])[:10], 1, 0, 'C')
-            pdf.cell(30, 8, f"${row['amount']:.2f}", 1, 1, 'R')
+            pdf.cell(30, 8, f"MK {row['amount']:.2f}", 1, 1, 'R')
         pdf.set_font("Arial", 'B', 11)
-        pdf.cell(0, 10, f"Total Amount: ${total_amount:.2f}", ln=True, align='R')
+        pdf.cell(0, 10, f"Total Amount: MK {total_amount:.2f}", ln=True, align='R')
 
         # 5. Upload generated PDF to Supabase Storage bucket.
         #file_name = f"reports/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
@@ -130,9 +130,9 @@ class PaymentReportGenerator:
                     row['customer'],
                     row['item'],
                     row['date'],
-                    f"{row['amount']:.2f}",
+                    f"MK {row['amount']:.2f}",
                 ])
-            writer.writerow(['', '', '', '', '', '', 'Total Amount', f"{total_amount:.2f}"])
+            writer.writerow(['', '', '', '', '', '', 'Total Amount', f"MK {total_amount:.2f}"])
         return str(output_path)
 
     @staticmethod
@@ -164,7 +164,7 @@ class PaymentReportGenerator:
     @staticmethod
     def _build_doc(payment, rows, total_amount):
         period = PaymentReportGenerator._format_period(payment)
-        file_name = f"payment_{getattr(payment, 'id', 'record')}_{period.replace('-', '')}.doc"
+        file_name = f"payment_{getattr(payment, 'id', 'record')}_{period.replace('-', '')}.docx"
         output_path = PaymentReportGenerator._report_dir() / file_name
         lines = [
             "MSG Cafe Payment Record",

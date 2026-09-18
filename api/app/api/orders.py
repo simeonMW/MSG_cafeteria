@@ -66,6 +66,7 @@ def get_history():
     """
     Returns the order history for the logged-in customer.
     """
+    
     user_id = request.user.get('user_id')
     history = OrderService.get_customer_history(user_id)
     return jsonify([tx.to_dict() for tx in history]), 200

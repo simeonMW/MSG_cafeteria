@@ -217,7 +217,7 @@ window.filterOrdersTable = function () {
         const status = row.dataset.status || '';
         const paid = row.dataset.paid || '';
         const searchMatch = !input || text.includes(input.value.toLowerCase());
-        const statusMatch = !statusFilter || statusFilter.value === 'all' || status.toLowerCase() === statusFilter.value.toLowerCase() || paid.toLowerCase() === statusFilter.value.toLowerCase();
+        const statusMatch = !statusFilter || statusFilter.value === 'all' || (status.toLowerCase() === statusFilter.value.toLowerCase() && !(paid.toLowerCase() ==='true'))|| paid.toLowerCase() === statusFilter.value.toLowerCase();
         row.style.display = searchMatch && statusMatch ? '' : 'none';
     }); 
 }
@@ -260,12 +260,12 @@ window.toggleUserVerification = async function (userId, userName, checked) {
             return window.alert("User Modification Success");
 
         } catch (error) {
-            console.log("User Modification Failed");
-            return window.alert("User Modification Failed");
+            //console.log("Cancelled : User Modification");
+            return window.alert("Error : User Modification Failed \nRefresh page");
 
         }
     }
-    return window.alert("User Modification Failed");
+    return window.alert("Cancelled : User Modification failed \nRefresh page");
 };
 
 window.currentPaymentId = null;
@@ -320,14 +320,19 @@ window.downloadPaymentRecord = function (payId, format = 'pdf') {
         format = format_stored ? format_stored : format_selection.value;
     }
     if (!payId) return;
-    const url = `/admin/api/payments/${payId}/download?format=${format}`;
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    if (window.confirm("Download Payment Record : Press OK to continue")) {
+        const url = `/admin/api/payments/${payId}/download?format=${format}`;
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        window.alert("Cancelled : Payment Record Download ");
+    }
 };
 
 window.downloadPaymentRecordFromModal = function () {
@@ -344,7 +349,7 @@ window.sharePaymentReport = function () {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(payload.share_url).catch(() => {});
             }
-            window.alert(`Payment document link ready for forwarding:\n${payload.share_url}`);
+            window.alert(`link coppied to clipboard :\n\n${payload.share_url}\n\npaste it in messages for sharing`);
         })
         .catch(() => {
             window.alert('Unable to generate a shareable payment link.');
@@ -352,26 +357,41 @@ window.sharePaymentReport = function () {
 };
 
 window.markPaymentAsPaid = function () {
+    const paid_badge = document.querySelector('#modalStatusBadge').textContent;
+
     if (!window.currentPaymentId) return;
-    fetch(`/admin/api/payments/${window.currentPaymentId}/mark-paid`, { method: 'POST' })
-        .then((response) => response.json())
-        .then((payload) => {
-            if (!payload || payload.status !== 'success') return;
-            const badge = document.getElementById('modalStatusBadge');
-            if (badge) {
-                badge.textContent = 'paid';
-                badge.className = 'badge badge-paid';
-            }
-            const row = document.querySelector(`#paymentsTableBody tr[data-pay-id="${window.currentPaymentId}"]`);
-            if (row) {
-                row.setAttribute('data-status', 'paid');
-                const statusCell = row.querySelector('.badge');
-                if (statusCell) statusCell.textContent = 'paid';
-            }
-            window.alert('Payment marked as paid.');
-            window.open(document.URL, "_self");
-        })
-        .catch(() => {
-            window.alert('Unable to update payment status.');
-        });
+
+    if (window.confirm("\nUpdate Payment Record as 'PAID'")  && paid_badge !== 'paid' ){
+
+
+        fetch(`/admin/api/payments/${window.currentPaymentId}/mark-paid`, { method: 'POST' })
+            .then((response) => response.json())
+            .then((payload) => {
+                
+                console.log(payload);
+
+                if (!payload || payload.status !== 'success') {
+                    return window.alert('Iternal Error : Unable to update payment status.');
+                }
+
+                window.alert('Payment marked as paid.');
+                const badge = document.getElementById('modalStatusBadge');
+                if (badge) {
+                    badge.textContent = 'paid';
+                    badge.className = 'badge badge-paid';
+                }
+                const row = document.querySelector(`#paymentsTableBody tr[data-pay-id="${window.currentPaymentId}"]`);
+                if (row) {
+                    row.setAttribute('data-status', 'paid');
+                    const statusCell = row.querySelector('.badge');
+                    if (statusCell) statusCell.textContent = 'paid';
+                }
+                window.open(document.URL, "_self");
+            })
+            .catch(() => {
+                window.alert('Error : Unable to update payment status.');
+            });
+    } else if (paid_badge === 'paid') {
+        { window.alert('Cancelled : Payment status is up-to-date.') }
+    } else { window.alert('Cancelled : Payment status update failed.') }
 };

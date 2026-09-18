@@ -131,7 +131,7 @@ def mark_payment_paid(payment_id):
     payment.payment_status = 'paid'
     payment.checked_out_at = datetime.utcnow()
     db.session.commit()
-    return jsonify({"status": "success", "payment_id": payment.id, "status": payment.payment_status})
+    return jsonify({"status": "success", "payment_id": payment.id, "payment_status": payment.payment_status})
 
 
 @dashboard_bp.route('/api/payments/<int:payment_id>/download', methods=['GET'])
@@ -191,6 +191,7 @@ def month():
 
 
 # endpoints for pages
+##########
 @dashboard_bp.route('/', methods=['GET'])
 def root():
     return redirect(url_for('dashboard.signin'))
@@ -305,9 +306,9 @@ def get_orders():
     transactions = [ tx for tx in transactionz_unfiltered if tx.created_at.strftime('%Y-%m') == session["active_month"] ]
 
     #price to be settled , for checked out orders
-    total_price_amount = round(sum(tx.order_price for tx in transactions if tx.status == "checked_out"), 2)
-    total_orders = sum(1 for tx in transactions if tx.status == "checked_out" )
-    
+    total_price_amount = round(sum(tx.order_price for tx in transactions if tx.status == "checked_out" and tx.payment_id == None ), 2)
+    total_orders = sum(1 for tx in transactions if tx.status == "checked_out" and tx.payment_id == None )
+
     orders = []
     for tx in transactions:
         customer = User.query.get(tx.customer_id)

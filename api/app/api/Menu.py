@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # Load variables from .env file for local development
 load_dotenv()
 
-def save_image(file):
+""" def save_image(file):
     base_dir = os.getenv('UPLOAD_FOLDER', 'app/static/menu')
     filename = secure_filename(file.filename)
 
@@ -19,7 +19,7 @@ def save_image(file):
 
     file.save(system_path)
 
-    return system_path
+    return system_path """
 
 
 menu_bp = Blueprint('menu', __name__)
