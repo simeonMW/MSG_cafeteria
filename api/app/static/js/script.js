@@ -342,14 +342,90 @@ window.downloadPaymentRecordFromModal = function () {
 
 window.sharePaymentReport = function () {
     if (!window.currentPaymentId) return;
+
     fetch(`/admin/api/payments/${window.currentPaymentId}/share?format=pdf`)
         .then((response) => response.json())
         .then((payload) => {
             if (!payload || !payload.share_url) return;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(payload.share_url).catch(() => {});
-            }
-            window.alert(`link coppied to clipboard :\n\n${payload.share_url}\n\npaste it in messages for sharing`);
+
+            const existingMenu = document.getElementById('shareDestinationMenu');
+            if (existingMenu) existingMenu.remove();
+
+            const modalControls = document.querySelector('#paymentDetailModal .modal-controls');
+            if (!modalControls) return;
+
+            const menu = document.createElement('div');
+            menu.id = 'shareDestinationMenu';
+            menu.style.position = 'absolute';
+            menu.style.top = '100%';
+            menu.style.left = '0';
+            menu.style.right = '0';
+            menu.style.display = 'grid';
+            menu.style.gap = '8px';
+            menu.style.marginTop = '10px';
+            menu.style.padding = '12px';
+            menu.style.background = '#ffffff';
+            menu.style.border = '1px solid #dfe7ef';
+            menu.style.borderRadius = '12px';
+            menu.style.boxShadow = '0 12px 30px rgba(15, 23, 42, 0.12)';
+            menu.style.zIndex = '20';
+            menu.style.textAlign = 'left';
+
+            const options = [
+                {
+                    label: 'Copy link',
+                    handler: () => {
+                        navigator.clipboard.writeText(payload.share_url).then(() => {
+                            window.alert(`Link copied to clipboard:\n\n${payload.share_url}`);
+                        }).catch(() => {
+                            window.alert(`Share link:\n\n${payload.share_url}`);
+                        });
+                    }
+                }/*,
+                {
+                    label: 'Email',
+                    handler: () => {
+                        const mailto = `mailto:?subject=${encodeURIComponent('MSG Cafe payment report')}&body=${encodeURIComponent(`Open this payment report here:\n${payload.share_url}`)}`;
+                        window.location.href = mailto;
+                    }
+                } ,
+                {
+                    label: 'WhatsApp',
+                    handler: () => {
+                        const shareUrl = `https://wa.me/?text=${encodeURIComponent(payload.share_url)}`;
+                        window.open(shareUrl, '_blank', 'noopener,noreferrer');
+                    }
+                },
+                {
+                    label: 'Telegram',
+                    handler: () => {
+                        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(payload.share_url)}`;
+                        window.open(shareUrl, '_blank', 'noopener,noreferrer');
+                    }
+                } */
+            ];
+
+            options.forEach(({ label, handler }) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = label;
+                button.style.padding = '10px 12px';
+                button.style.borderRadius = '8px';
+                button.style.border = '1px solid #dfe7ef';
+                button.style.background = '#f8fafc';
+                button.style.color = '#1f2937';
+                button.style.cursor = 'pointer';
+                button.style.fontWeight = '600';
+                button.style.textAlign = 'left';
+                button.addEventListener('click', () => {
+                    handler();
+                    menu.remove();
+                });
+                menu.appendChild(button);
+            });
+
+            modalControls.style.position = 'relative';
+            modalControls.appendChild(menu);
         })
         .catch(() => {
             window.alert('Unable to generate a shareable payment link.');

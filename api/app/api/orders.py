@@ -71,6 +71,7 @@ def get_history():
     history = OrderService.get_customer_history(user_id)
     return jsonify([tx.to_dict() for tx in history]), 200
 
+
 @orders_bp.route('/<int:transaction_id>/qr', methods=['GET'])
 @role_required(['customer'])
 def get_transaction_qr(transaction_id):
@@ -85,6 +86,28 @@ def get_transaction_qr(transaction_id):
 
     signed_url = SupabaseStorage.create_signed_url(transaction.qr_code_path, expires_in=300)
     return jsonify({"qr_code_url": signed_url}), 200
+
+@orders_bp.route('/<int:transaction_id>', methods=['DELETE'])
+@role_required(['customer'])
+def delete_order(transaction_id):
+    """
+    Allows the customer to cancel their own order while it is still pending.
+    """
+    user_id = request.user.get('user_id')
+    role = request.user.get('role')
+    success, msg = OrderService.delete_unchecked_out_transaction(user_id, transaction_id, role)
+
+    if not success:
+        if 'not found' in msg.lower():
+            return jsonify({"error": msg}), 404
+        if 'access denied' in msg.lower() or 'unauthorized' in msg.lower():
+            return jsonify({"error": msg}), 403
+        if 'checked out' in msg.lower() or 'pending' in msg.lower():
+            return jsonify({"error": msg}), 409
+        return jsonify({"error": msg}), 400
+
+    return jsonify({"message": msg, "transaction_id": transaction_id}), 200
+
 
 @orders_bp.route('/queue', methods=['GET'])
 @role_required(['chef'])

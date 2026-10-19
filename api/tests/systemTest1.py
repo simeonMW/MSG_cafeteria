@@ -28,6 +28,7 @@ user_ids = {}
 menu_items = {}
 transaction_ids = {}
 payment_ids = {}
+deleted_orders = {}
 
 # Test Results Tracking
 test_results = {
@@ -349,8 +350,27 @@ def test_orders_place_multiple():
             tx_id = data.get('transaction_id')
             token = data.get('token')
             transaction_ids[f"order{i+2}"] = {"id": tx_id, "token": token}
+            print_test("Place multiple orders", "PASS", f"Created {len(transaction_ids)} orders")
+        else:
+            print_test("Place multiple orders", "FAIL", data)
+
+def test_delete_order():
+    """test deleting pending / unchecked out orders"""
+    print("\n" + "-"*70)
+
+    if "customer" not in tokens or "first" not in menu_items:
+        return
     
-    print_test("Place multiple orders", "PASS", f"Created {len(transaction_ids)} orders")
+    headers = {"Authorization": f"Bearer {tokens['customer']}"}
+
+    respo = requests.delete(f"{BASE_URL}/orders/33", headers=headers)
+
+    success, data = handle_response(respo, 200)
+    if success:
+        tx_id = data.get('transaction_id')
+        deleted_orders[f'oder 1'] = {"id": tx_id}
+
+    print_test("Delete pending orders for customer", "PASS", f"Deleted {tx_id}")
 
 def test_orders_verify():
     """Test chef verifying orders"""
@@ -555,6 +575,7 @@ def run_all_tests():
         # Order Tests
         test_orders_place()
         test_orders_place_multiple()
+        test_delete_order()
         test_orders_verify()
         test_orders_replay_attack()
         test_orders_authorization()

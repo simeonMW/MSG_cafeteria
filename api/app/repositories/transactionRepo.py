@@ -86,3 +86,15 @@ class TransactionRepo:
         are currently in the queue.
         """
         return Transaction.query.filter_by(status='pending').count()
+
+    @staticmethod
+    def delete(tx_id):
+        """
+        Permanently remove a transaction when the customer cancels a still-pending order.
+        """
+        tx = Transaction.query.get(tx_id)
+        if tx:
+            db.session.delete(tx)
+            db.session.commit()
+            return True
+        return False

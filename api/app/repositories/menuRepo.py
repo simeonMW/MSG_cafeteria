@@ -88,6 +88,7 @@ class MenuRepo:
         item = MenuItem.query.get(item_id)
         if item:
             item.is_available = False
+            # db.session.delete(item)
             db.session.commit()
             return True
         return False

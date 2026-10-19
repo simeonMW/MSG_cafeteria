@@ -23,7 +23,7 @@ class OrderService:
 
         # 2. Generate Unique Token & QR (Process 3.3 Logic)
         token = QRGen.generate_secure_token()
-        try:
+        try:  
             qr_path = QRGen.create_qr_image(token)
         except Exception:
             qr_path = "no path, use token"
@@ -93,3 +93,30 @@ class OrderService:
             end_date=datetime.utcnow()
         )
         return [tx for tx in all_tx if tx.status == 'pending']
+
+    @staticmethod
+    def delete_unchecked_out_transaction(user_id, transaction_id, role):
+        """
+        Logic for the customer to delete orders that have not been checked out.
+        """
+        if role != 'customer':
+            return False, "Unauthorized: Only customers can delete their own pending orders."
+
+        transaction = TransactionRepo.get_by_id(transaction_id)
+        if not transaction:
+            return False, "Order not found."
+
+        if transaction.customer_id != user_id:
+            return False, "Access denied: You can only delete your own order."
+
+        if transaction.status == 'checked_out':
+            return False, "Order has already been checked out and cannot be deleted."
+
+        if transaction.status not in ('pending', 'unchecked_out', 'not_checked_out'):
+            return False, "Only pending or unchecked-out orders can be deleted."
+
+        deleted = TransactionRepo.delete(transaction_id)
+        if not deleted:
+            return False, "Unable to delete the order."
+
+        return True, "Order deleted successfully."

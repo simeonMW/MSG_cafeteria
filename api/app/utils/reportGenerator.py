@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 import os
+import threading
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -14,6 +15,27 @@ load_dotenv()
 
 class PaymentReportGenerator:
     """Build month scoped payment records in PDF/Excel/CSV/DOC formats."""
+
+    @staticmethod
+    def schedule_cleanup(file_path, delay_minutes=5):
+        """Remove a generated local report after the requested delay."""
+        if not file_path:
+            return
+
+        target = Path(file_path)
+        if not target.exists() or not target.is_file():
+            return
+
+        def _delete_file():
+            try:
+                if target.exists():
+                    target.unlink()
+            except OSError:
+                pass
+
+        timer = threading.Timer(delay_minutes * 60, _delete_file)
+        timer.daemon = True
+        timer.start()
 
     @staticmethod
     def _report_dir():

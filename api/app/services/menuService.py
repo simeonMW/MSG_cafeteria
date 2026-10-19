@@ -74,3 +74,22 @@ class MenuService:
             status = "available" if item.is_available else "unavailable"
             return {"id": item.id, "status": status}, f"Item is now {status}."
         return None, "Item not found."
+
+    @staticmethod
+    def delete_item(item_id, role):
+        """
+        Chef-only logical deletion of a menu item.
+        Keeps historical order records intact while removing the item from active inventory.
+        """
+        if role != 'chef':
+            return None, "Unauthorized: Only the Chef can delete menu items."
+
+        item = MenuRepo.get_by_id(item_id)
+        if not item:
+            return None, "Item not found."
+
+        deleted = MenuRepo.delete_logical(item_id)
+        if not deleted:
+            return None, "Unable to delete the item."
+
+        return {"id": item.id, "is_available": False}, "Menu item removed successfully."

@@ -16,7 +16,7 @@ def get_supabase_client():
 
 
 class SupabaseStorage:
-    """Helper wrapper for Supabase Storage bucket operations."""
+    """for Supabase Storage bucket operations."""
 
     @staticmethod
     def bucket_name():
@@ -25,7 +25,9 @@ class SupabaseStorage:
     @staticmethod
     def upload_bytes(object_path: str, data: bytes, content_type: str):
         client = get_supabase_client()
+        print('\n',client,'\n')
         storage = client.storage()
+        print('\n',storage,'\n')
         bucket = SupabaseStorage.bucket_name()
 
         response = storage.from_(bucket).upload(
@@ -37,6 +39,7 @@ class SupabaseStorage:
         )
 
         if response.get("error"):
+            print(f"\nSupabase upload failed: {response['error'].get('message', response['error'])}\n")
             raise RuntimeError(
                 f"Supabase upload failed: {response['error'].get('message', response['error'])}"
             )

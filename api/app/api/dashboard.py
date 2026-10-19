@@ -15,7 +15,7 @@ from app.models.payment import Payment
 from app.models.menuItem import MenuItem
 from app.models.Transaction import Transaction
 from app.services.authService import AuthService
-from app.utils.reportGenerator import PDFGenerator
+from app.utils.reportGenerator import PDFGenerator, PaymentReportGenerator
 # from app.repositories.paymentRepo import PaymentRepo
 
 
@@ -154,6 +154,7 @@ def download_payment_document(payment_id):
     file_path = PDFGenerator.generate_payment_export(payment, rows, output_format)
     payment.doc_url = file_path
     db.session.commit()
+    PaymentReportGenerator.schedule_cleanup(file_path, delay_minutes=5)
 
     mimetype_map = {
         'pdf': 'application/pdf',

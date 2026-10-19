@@ -49,7 +49,7 @@ class QRGen:
     @staticmethod
     def get_qr_bytes(token_string):
         """
-        Helper method to return the QR code as a byte stream.
+        method to return the QR code as a byte stream.
         Useful for serving the image directly to the Mobile App without saving to disk.
         """
         qr = qrcode.QRCode(box_size=10, border=2)
@@ -61,4 +61,5 @@ class QRGen:
         buf = BytesIO()
         img.save(buf)
         buf.seek(0)
+        
         return buf.getvalue()

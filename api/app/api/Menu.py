@@ -110,3 +110,19 @@ def toggle_item(item_id):
         return jsonify({"error": msg}), 404
         
     return jsonify({"message": msg, "data": result}), 200
+
+
+@menu_bp.route('/delete/<int:item_id>', methods=['DELETE'])
+@role_required(['chef'])
+def delete_item(item_id):
+    """
+    Chef-only endpoint to remove a menu item from active stock while preserving historical integrity.
+    """
+    role = request.user.get('role')
+    result, msg = MenuService.delete_item(item_id, role)
+
+    if not result:
+        status_code = 403 if 'unauthorized' in msg.lower() else 404
+        return jsonify({"error": msg}), status_code
+
+    return jsonify({"message": msg, "item": result}), 200
